@@ -1,13 +1,14 @@
+CC=llvm-g++-4.2
 NAME=Tiles
 DIR=build
+test: all
+	./$(DIR)/$(NAME)
 clean:
 	rm -rf $(NAME).app
 	rm -rf $(NAME).zip
-test: all
-	./$(DIR)/$(NAME)
 all:
 	mkdir -p $(DIR)
-	g++ main.cpp -o $(DIR)/$(NAME) -lsfml-window -framework OpenGL
+	$(CC) main.cpp -o $(DIR)/$(NAME) -lsfml-window -framework OpenGL -framework Cocoa
 bundle: all
 	rm -rf $(NAME).app
 	mkdir -p $(NAME)/Contents/MacOS

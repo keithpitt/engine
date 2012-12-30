@@ -1,12 +1,15 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
+#include <SFML/Graphics.hpp>
 
 int main() {
   std::cout << "hello";
 
   // Create the window
   sf::Window window(sf::VideoMode(1280, 720), "Tiles");
+  sf::CircleShape shape(100.0f);
+  shape.setFillColor(sf::Color::Green);
   // window.setVerticalSyncEnabled(true);
 
   // The main loop
@@ -27,6 +30,8 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // End the current window frame (actually swaps the front and back buffers)
+    window.draw(shape);
+
     window.display();
   }
 
