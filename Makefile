@@ -1,14 +1,18 @@
-CC=llvm-g++-4.2
+CC=g++
 NAME=Tiles
 DIR=build
+CFLAGS=`sdl-config --cflags --static-libs`
+all: engine
+	$(CC) build/Engine.o main.cpp -o $(DIR)/$(NAME) $(CFLAGS)
 test: all
 	./$(DIR)/$(NAME)
 clean:
+	rm -rf $(DIR)
 	rm -rf $(NAME).app
-	rm -rf $(NAME).zip
-all:
+prepare:
 	mkdir -p $(DIR)
-	$(CC) main.cpp -o $(DIR)/$(NAME) -lsfml-window -framework OpenGL -framework Cocoa
+engine: prepare
+	$(CC) -Wall -c lib/Engine.cpp -o $(DIR)/Engine.o
 bundle: all
 	rm -rf $(NAME).app
 	mkdir -p $(NAME)/Contents/MacOS
