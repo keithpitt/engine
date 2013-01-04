@@ -2,8 +2,9 @@ CC=g++
 NAME=Tiles
 DIR=build
 CFLAGS=`sdl-config --cflags --static-libs`
-all: engine
-	$(CC) build/Engine.o main.cpp -o $(DIR)/$(NAME) $(CFLAGS)
+all:
+	mkdir -p $(DIR)
+	$(CC) src/settings.cpp src/shared.cpp main.cpp -o $(DIR)/$(NAME) $(CFLAGS)
 test: all
 	./$(DIR)/$(NAME)
 clean:
@@ -11,8 +12,6 @@ clean:
 	rm -rf $(NAME).app
 prepare:
 	mkdir -p $(DIR)
-engine: prepare
-	$(CC) -Wall -c lib/Engine.cpp -o $(DIR)/Engine.o
 bundle: all
 	rm -rf $(NAME).app
 	mkdir -p $(NAME)/Contents/MacOS

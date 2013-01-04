@@ -1,9 +1,5 @@
 #include "Engine.h"
 
-const int WIDTH=1280;
-const int HEIGHT=720;
-const int FPS=60;
-
 void Engine::setup() {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_Surface * screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
