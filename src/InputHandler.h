@@ -1,7 +1,7 @@
 #ifndef _INPUT_HANDLER_H_
 #define _INPUT_HANDLER_H_
 
-#include <SDL/SDL.h>
+typedef union SDL_Event;
 
 class InputHandler {
   private:

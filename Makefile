@@ -2,7 +2,7 @@ Sources=InputHandler.cpp Renderer.cpp Game.cpp
 Executable=Tiles
 
 CFlags=-c -Wall -g -Iinc
-LDFlags=$(shell sdl-config --cflags --static-libs)
+LDFlags=$(shell sdl2-config --cflags --static-libs)
 ObjectDir=build/
 SourceDir=src/
 BuildDir=bin/

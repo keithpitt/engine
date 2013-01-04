@@ -1,4 +1,3 @@
-#include <SDL/SDL.h>
 #include "src/Game.h"
 
 int main(int argc, char** argv) {

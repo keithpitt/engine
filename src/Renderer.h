@@ -3,10 +3,17 @@
 
 #include <stdint.h>
 
+class SDL_Window;
+typedef void *SDL_GLContext;
+
 class Renderer {
-  uint32_t delay;
-  uint32_t offset;
-  uint32_t start;
+  private:
+    uint32_t delay;
+    uint32_t offset;
+    uint32_t start;
+
+    SDL_Window *window;
+    SDL_GLContext glcontext;
 
   public:
     int width;
