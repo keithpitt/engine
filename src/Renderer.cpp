@@ -6,15 +6,17 @@
 // For more info about how we use SDL, see this:
 // http://wiki.libsdl.org/moin.cgi/SDL_GL_CreateContext?highlight=%28SDL%5C_OPENGL%29
 
-Renderer::Renderer(int width, int height, int fps) {
+Renderer::Renderer(char *title, int width, int height, int fps) {
+  this->title = title;
   this->width = width;
   this->height = height;
+  this->fps = fps;
 
   // Initialize SDL
   SDL_Init(SDL_INIT_VIDEO);
 
   // Create a window. Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
-  window = SDL_CreateWindow("Something",
+  window = SDL_CreateWindow(title,
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
       width, height,
       SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);

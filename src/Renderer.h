@@ -16,11 +16,12 @@ class Renderer {
     SDL_GLContext glcontext;
 
   public:
+    char *title;
     int width;
     int height;
     int fps;
 
-    Renderer(int width, int height, int fps);
+    Renderer(char *title, int width, int height, int fps);
     void BeginDraw();
     void EndDraw();
 };

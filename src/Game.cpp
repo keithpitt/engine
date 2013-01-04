@@ -7,7 +7,7 @@
 #include "Renderer.h"
 
 Game::Game() {
-  renderer = new Renderer(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, MAX_FPS);
+  renderer = new Renderer("Hey!", RESOLUTION_WIDTH, RESOLUTION_HEIGHT, MAX_FPS);
   inputHandler = new InputHandler();
 }
 
