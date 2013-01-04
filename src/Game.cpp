@@ -1,17 +1,35 @@
-#include "Engine.h"
+#include "Game.h"
 
-void Engine::setup() {
+#include <iostream>
+#include <SDL/SDL.h>
+#include "OpenGL.h"
+#include "Settings.h"
+
+Game::Game() {
+  // Initialize SDL
   SDL_Init(SDL_INIT_EVERYTHING);
-  SDL_Surface * screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
+
+  // Initialize the SDL surface
+  SDL_Surface *surface = NULL;
+  surface = SDL_SetVideoMode(RESOLUTION_WIDTH, RESOLUTION_HEIGHT, 32, SDL_SWSURFACE|SDL_OPENGL);
+
+  if (surface == NULL) {
+    fprintf(stderr, "Error during SDL_SetVideoMode: %s\n", SDL_GetError());
+    SDL_Quit();
+    exit(1);
+  }
 
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0.0, WIDTH, HEIGHT, 0.0, -1.0, 1.0);
+  glOrtho(0.0, RESOLUTION_WIDTH, RESOLUTION_HEIGHT, 0.0, -1.0, 1.0);
 }
 
-void Engine::loop() {
+int Game::Run() {
+  uint32_t delay = 1000 / MAX_FPS;
+  uint32_t offset;
   uint32_t start;
+
   SDL_Event event;
 
   running = true;
@@ -54,15 +72,10 @@ void Engine::loop() {
 
     SDL_GL_SwapBuffers();
 
-    int offset = SDL_GetTicks() - start;
-    if((1000 / FPS) > offset)
-      SDL_Delay((1000 / FPS) - offset);
+    offset = SDL_GetTicks() - start;
+    if(delay > offset)
+      SDL_Delay(delay - offset);
   }
-}
-
-int Engine::run() {
-  setup();
-  loop();
 
   return 0;
 }
