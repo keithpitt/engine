@@ -1,4 +1,4 @@
-Sources=Game.cpp
+Sources=InputHandler.cpp Renderer.cpp Game.cpp
 Executable=Tiles
 
 CFlags=-c -Wall -g -Iinc
