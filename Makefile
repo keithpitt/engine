@@ -1,10 +1,10 @@
-Sources=InputHandler.cpp Renderer.cpp Game.cpp
+Sources=input/Keyboard.cpp InputState.cpp Renderer.cpp Game.cpp
 Executable=Tiles
 
 CFlags=-c -Wall -g -Iinc
 LDFlags=$(shell sdl2-config --cflags --static-libs)
 ObjectDir=build/
-SourceDir=src/
+SourceDir=lib/
 BuildDir=bin/
 
 CC=g++
@@ -22,14 +22,15 @@ $(CExecutable): prepare $(CObjects)
 	$(CC) $(LDFlags) $(CObjects) main.cpp -o $@
 
 $(ObjectDir)%.o: $(SourceDir)%.cpp
+	mkdir -p `dirname $@`
 	$(CC) $(CFlags) $< -o $@
 
 prepare:
-	mkdir -p $(ObjectDir)
 	mkdir -p $(BuildDir)
 
 test: all
 	./$(BuildDir)$(Executable)
 
 clean:
-	$(RM) $(CObjects)
+	rm -rf $(BuildDir)
+	rm -rf $(ObjectDir)

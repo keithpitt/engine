@@ -1,7 +1,10 @@
 #include <SDL2/SDL.h>
 #include "OpenGL.h"
 
+#include "InputState.h"
+#include "input/Keyboard.h"
 #include "Renderer.h"
+#include "Debug.h"
 
 // For more info about how we use SDL, see this:
 // http://wiki.libsdl.org/moin.cgi/SDL_GL_CreateContext?highlight=%28SDL%5C_OPENGL%29
@@ -35,6 +38,19 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
   glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
 
   delay = 1000 / fps;
+}
+
+Renderer::~Renderer() {
+  log("Cleaning up window.");
+
+  SDL_GL_DeleteContext(glcontext);
+  SDL_DestroyWindow(window);
+}
+
+void Renderer::Update(InputState *inputState) {
+  if(inputState->keyboard->IsKeyDown(SDLK_UP)) {
+    log("Up pressed.");
+  }
 }
 
 void Renderer::BeginDraw() {

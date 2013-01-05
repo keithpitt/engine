@@ -1,4 +1,4 @@
-#include "src/Game.h"
+#include "lib/Game.h"
 
 int main(int argc, char** argv) {
   Game *game = new Game();

@@ -1,14 +1,14 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-class InputHandler;
+class InputState;
 class Renderer;
 
 class Game {
   private:
     bool running;
 
-    InputHandler* inputHandler;
+    InputState* inputState;
     Renderer* renderer;
 
   public:

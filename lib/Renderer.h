@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 class SDL_Window;
+class InputState;
 typedef void *SDL_GLContext;
 
 class Renderer {
@@ -22,6 +23,9 @@ class Renderer {
     int fps;
 
     Renderer(char *title, int width, int height, int fps);
+    ~Renderer();
+
+    void Update(InputState *inputState);
     void BeginDraw();
     void EndDraw();
 };
