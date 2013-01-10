@@ -59,8 +59,9 @@ GLuint createTexture(FIBITMAP *image) {
 
   // debug("Creating texture %ix%i (%i)", w, h, bits);
 
-  // build our texture mipmaps
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_DECAL);
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_DECAL);
+
 
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // The magnification function ("linear" produces better results)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -68,6 +69,9 @@ GLuint createTexture(FIBITMAP *image) {
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // If the u,v coordinates overflow the range 0,1 the image is repeated
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+  // build our texture mipmaps
+  // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_BGRA, GL_UNSIGNED_BYTE, bits);
 
   return texture;
 
@@ -92,25 +96,63 @@ int Game::Run() {
   GLuint testTexture = createTexture(image);
   freeImage(image);
 
-  int w = 256.0;
-  int h = 192.0;
 
   int x = 100;
   int y = 100;
+  int w = 64;
+  int h = 64;
   int size = 4;
+
+  int d = 1;
+  int l = 0;
+
+  int spritex;
+  int spritey;
+  int texturew;
+  int textureh;
+  bool changed = false;
 
   while(running) {
     renderer->BeginDraw();
     inputState->Update();
 
+    spritex = l * 64;
+    spritey = (4 - d) * 64;
+    texturew = 256.0;
+    textureh = 256.0;
+
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, testTexture);
     glBegin(GL_QUADS);
-    glTexCoord2d(0.0,0.0); glVertex2d(x, y);
-    glTexCoord2d(1.0,0.0); glVertex2d(x + w, y);
-    glTexCoord2d(1.0,1.0); glVertex2d(x + w, y + h);
-    glTexCoord2d(0.0,1.0); glVertex2d(x, y + h);
+
+    glTexCoord2d(spritex/(double)texturew,spritey/(double)textureh);
+    glVertex2f(x,y);
+    glTexCoord2d((spritex+w)/(double)texturew,spritey/(double)textureh);
+    glVertex2f(x+w,y);
+    glTexCoord2d((spritex+w)/(double)texturew,(spritey+h)/(double)textureh);
+    glVertex2f(x+w,y+h);
+    glTexCoord2d(spritex/(double)texturew,(spritey+h)/(double)textureh);
+    glVertex2f(x,y+h);
+
     glEnd();
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_n)) {
+      if(!changed) {
+        l += 1;
+
+        if(l > 3) {
+          l = 0;
+          d += 1;
+
+          if(d > 3) {
+            d = 1;
+          }
+        }
+        changed = true;
+      }
+    } else {
+      changed = false;
+    }
 
     if(inputState->keyboard->IsKeyDown(KEYBOARD_q)) {
       w = w - size;
