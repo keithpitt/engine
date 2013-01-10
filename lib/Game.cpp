@@ -74,8 +74,6 @@ GLuint createTexture(FIBITMAP *image) {
   // build our texture mipmaps
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)textura);
 
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // If the u,v coordinates overflow the range 0,1 the image is repeated
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // The magnification function ("linear" produces better results)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -103,6 +101,13 @@ int Game::Run() {
   GLuint testTexture = createTexture(image);
   freeImage(image);
 
+  int w = 256.0;
+  int h = 192.0;
+
+  int x = 100;
+  int y = 100;
+  int size = 4;
+
   while(running) {
     renderer->BeginDraw();
     inputState->Update();
@@ -110,11 +115,37 @@ int Game::Run() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, testTexture);
     glBegin(GL_QUADS);
-    glTexCoord2d(0.0,0.0); glVertex2d(0.0,0.0);
-    glTexCoord2d(1.0,0.0); glVertex2d(256.0,0.0);
-    glTexCoord2d(1.0,1.0); glVertex2d(256.0,192.0);
-    glTexCoord2d(0.0,1.0); glVertex2d(0.0, 192.0);
+    glTexCoord2d(0.0,0.0); glVertex2d(x, y);
+    glTexCoord2d(1.0,0.0); glVertex2d(x + w, y);
+    glTexCoord2d(1.0,1.0); glVertex2d(x + w, y + h);
+    glTexCoord2d(0.0,1.0); glVertex2d(x, y + h);
     glEnd();
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_q)) {
+      w = w - size;
+      h = h - size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_w)) {
+      w = w + size;
+      h = h + size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_UP)) {
+      y += size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_DOWN)) {
+      y -= size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_LEFT)) {
+      x -= size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_RIGHT)) {
+      x += size;
+    }
 
     if(inputState->keyboard->IsKeyDown(KEYBOARD_ESC)) {
       running = false;

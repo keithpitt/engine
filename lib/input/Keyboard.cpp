@@ -4,7 +4,14 @@
 #include "../Debug.h"
 
 const int KEYBOARD_ESC = SDLK_ESCAPE;
+
 const int KEYBOARD_q = SDLK_q;
+const int KEYBOARD_w = SDLK_w;
+
+const int KEYBOARD_UP = SDLK_UP;
+const int KEYBOARD_DOWN = SDLK_DOWN;
+const int KEYBOARD_LEFT = SDLK_LEFT;
+const int KEYBOARD_RIGHT = SDLK_RIGHT;
 
 Keyboard::Keyboard() {
   // This line here is so very very wrong.

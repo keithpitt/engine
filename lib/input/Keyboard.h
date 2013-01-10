@@ -6,7 +6,14 @@ typedef union SDL_Event;
 #include <vector>
 
 extern const int KEYBOARD_ESC;
+
 extern const int KEYBOARD_q;
+extern const int KEYBOARD_w;
+
+extern const int KEYBOARD_UP;
+extern const int KEYBOARD_DOWN;
+extern const int KEYBOARD_LEFT;
+extern const int KEYBOARD_RIGHT;
 
 class Keyboard {
   private:
