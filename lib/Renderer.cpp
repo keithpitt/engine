@@ -37,6 +37,10 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
   glLoadIdentity();
   glOrtho(0.0, width, 0, height, -1.0, 1.0);
 
+  // Enable alpha-channel transparency on textures
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   delay = 1000 / fps;
 }
 
