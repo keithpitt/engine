@@ -66,8 +66,9 @@ GLuint createTexture(FIBITMAP *image) {
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // The magnification function ("linear" produces better results)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // If the u,v coordinates overflow the range 0,1 the image is repeated
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  // If the u,v coordinates overflow the range 0,1 the image is repeated
+  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_STRETCH); 
+  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
   // build our texture mipmaps
   // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
@@ -99,8 +100,8 @@ int Game::Run() {
 
   int x = 100;
   int y = 100;
-  int w = 64;
-  int h = 64;
+  int w = 256;
+  int h = 256;
   int size = 4;
 
   int d = 1;
@@ -118,20 +119,43 @@ int Game::Run() {
 
     spritex = l * 64;
     spritey = (4 - d) * 64;
-    texturew = 256.0;
-    textureh = 256.0;
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, testTexture);
     glBegin(GL_QUADS);
 
-    glTexCoord2d(spritex/(double)texturew,spritey/(double)textureh);
+    float textureHeight = 256.0;
+    float textureWidth = 256.0;
+
+    float spriteUp = 0;
+    float spriteLeft = 3;
+
+    float spriteWidth = 64;
+    float spriteHeight = 64;
+    float spriteX = spriteLeft * spriteWidth;
+    float spriteY = spriteUp * spriteHeight;
+
+    float z = 64;
+    debug("%f", z);
+
+    //glTexCoord2d(spritex/(double)texturew,spritey/(double)textureh);
+    glTexCoord2f(spriteX / textureWidth,
+                 spriteY / textureHeight);
     glVertex2f(x,y);
-    glTexCoord2d((spritex+w)/(double)texturew,spritey/(double)textureh);
+
+    //glTexCoord2d((spritex+w)/(double)texturew,spritey/(double)textureh);
+    glTexCoord2f((spriteX + spriteWidth) / textureWidth,
+                  spriteY / textureHeight);
     glVertex2f(x+w,y);
-    glTexCoord2d((spritex+w)/(double)texturew,(spritey+h)/(double)textureh);
+
+    //glTexCoord2d((spritex+w)/(double)texturew,(spritey+h)/(double)textureh);
+    glTexCoord2f((spriteX + spriteWidth) / textureWidth,
+                 (spriteY + spriteHeight) / textureHeight);
     glVertex2f(x+w,y+h);
-    glTexCoord2d(spritex/(double)texturew,(spritey+h)/(double)textureh);
+
+    //glTexCoord2d(spritex/(double)texturew,(spritey+h)/(double)textureh);
+    glTexCoord2f(spriteX / textureWidth,
+                (spriteY + spriteHeight) / textureHeight);
     glVertex2f(x,y+h);
 
     glEnd();
