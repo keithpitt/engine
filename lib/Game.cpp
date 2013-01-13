@@ -7,10 +7,12 @@
 
 #include "Renderer.h"
 
+#include "windows.h"
 #include <FreeImage.h>
 
 #include "Debug.h"
 #include "OpenGL.h"
+#include <GL/gl.h>
 
 FIBITMAP* loadImage(const char* path) {
   // This will return the type of image. We could just manually pass in

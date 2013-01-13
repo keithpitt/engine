@@ -6,7 +6,12 @@ I know I'm not supposed to be writing an engine, but a game instead, but fuck th
 
 ## Windows
 
-NFI yet.
+Windows sucks to develop on. However, here are some things that should make it easier on you:
+
+http://www.cygwin.com/
+http://sourceforge.net/projects/console/
+http://www.sublimetext.com/
+http://www.mingw.org/
 
 ## Mac OSX
 
