@@ -8,6 +8,7 @@ const int KEYBOARD_ESC = SDLK_ESCAPE;
 const int KEYBOARD_q = SDLK_q;
 const int KEYBOARD_w = SDLK_w;
 const int KEYBOARD_n = SDLK_n;
+const int KEYBOARD_r = SDLK_r;
 
 const int KEYBOARD_UP = SDLK_UP;
 const int KEYBOARD_DOWN = SDLK_DOWN;

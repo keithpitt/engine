@@ -102,74 +102,73 @@ int Game::Run() {
   int y = 100;
   int w = 256;
   int h = 256;
+  int r = 0;
   int size = 4;
 
-  int d = 1;
-  int l = 0;
+  float spriteUp = 0;
+  float spriteLeft = 3;
 
-  int spritex;
-  int spritey;
-  int texturew;
-  int textureh;
   bool changed = false;
 
   while(running) {
     renderer->BeginDraw();
     inputState->Update();
 
-    spritex = l * 64;
-    spritey = (4 - d) * 64;
-
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, testTexture);
-    glBegin(GL_QUADS);
+
+    glLoadIdentity();
+    glTranslatef(x, y, 0);
+
+    int centreX = w / 2;
+    int centreY = h / 2;
+
+    glTranslatef(centreX, centreY, 0);
+    glRotatef(r, 0, 0, 1);
+    glTranslatef(-centreX, -centreY, 0);
 
     float textureHeight = 256.0;
     float textureWidth = 256.0;
-
-    float spriteUp = 0;
-    float spriteLeft = 3;
 
     float spriteWidth = 64;
     float spriteHeight = 64;
     float spriteX = spriteLeft * spriteWidth;
     float spriteY = spriteUp * spriteHeight;
 
-    float z = 64;
-    debug("%f", z);
+    glBegin(GL_QUADS);
 
     //glTexCoord2d(spritex/(double)texturew,spritey/(double)textureh);
     glTexCoord2f(spriteX / textureWidth,
                  spriteY / textureHeight);
-    glVertex2f(x,y);
+    glVertex2f(0, 0);
 
     //glTexCoord2d((spritex+w)/(double)texturew,spritey/(double)textureh);
     glTexCoord2f((spriteX + spriteWidth) / textureWidth,
                   spriteY / textureHeight);
-    glVertex2f(x+w,y);
+    glVertex2f(w, 0);
 
     //glTexCoord2d((spritex+w)/(double)texturew,(spritey+h)/(double)textureh);
     glTexCoord2f((spriteX + spriteWidth) / textureWidth,
                  (spriteY + spriteHeight) / textureHeight);
-    glVertex2f(x+w,y+h);
+    glVertex2f(w, h);
 
     //glTexCoord2d(spritex/(double)texturew,(spritey+h)/(double)textureh);
     glTexCoord2f(spriteX / textureWidth,
                 (spriteY + spriteHeight) / textureHeight);
-    glVertex2f(x,y+h);
+    glVertex2f(0, h);
 
     glEnd();
 
     if(inputState->keyboard->IsKeyDown(KEYBOARD_n)) {
       if(!changed) {
-        l += 1;
+        spriteLeft += 1;
 
-        if(l > 3) {
-          l = 0;
-          d += 1;
+        if(spriteLeft > 3) {
+          spriteLeft = 0;
+          spriteUp += 1;
 
-          if(d > 3) {
-            d = 1;
+          if(spriteUp > 3) {
+            spriteUp = 0;
           }
         }
         changed = true;
@@ -186,6 +185,10 @@ int Game::Run() {
     if(inputState->keyboard->IsKeyDown(KEYBOARD_w)) {
       w = w + size;
       h = h + size;
+    }
+
+    if(inputState->keyboard->IsKeyDown(KEYBOARD_r)) {
+      r = r + 10;
     }
 
     if(inputState->keyboard->IsKeyDown(KEYBOARD_UP)) {

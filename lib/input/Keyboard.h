@@ -10,6 +10,7 @@ extern const int KEYBOARD_ESC;
 extern const int KEYBOARD_q;
 extern const int KEYBOARD_w;
 extern const int KEYBOARD_n;
+extern const int KEYBOARD_r;
 
 extern const int KEYBOARD_UP;
 extern const int KEYBOARD_DOWN;

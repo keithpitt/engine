@@ -36,6 +36,7 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0, width, 0, height, -1.0, 1.0);
+  glMatrixMode(GL_MODELVIEW);
 
   // Enable alpha-channel transparency on textures
   glEnable(GL_BLEND);
@@ -43,7 +44,9 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
   glEnable(GL_TEXTURE_2D);
   glDisable(GL_DEPTH_TEST);
 
-  delay = 1000 / fps;
+  start  = SDL_GetTicks();
+  delay  = 1000 / fps;
+  frames = 0;
 }
 
 Renderer::~Renderer() {
@@ -60,16 +63,20 @@ void Renderer::Update(InputState *inputState) {
 }
 
 void Renderer::BeginDraw() {
-  start = SDL_GetTicks();
-
   glClear(GL_COLOR_BUFFER_BIT);
   glFlush();
+
+  ++frames;
 }
 
 void Renderer::EndDraw() {
   SDL_GL_SwapWindow(window);
 
   offset = SDL_GetTicks() - start;
+  float fps = ((float)frames / (float)offset) * 1000;
+
+  debug("FPS: %f", fps);
+
   if(delay > offset)
     SDL_Delay(delay - offset);
 }

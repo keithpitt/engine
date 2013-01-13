@@ -13,6 +13,8 @@ class Renderer {
     uint32_t offset;
     uint32_t start;
 
+    int frames;
+
     SDL_Window *window;
     SDL_GLContext glcontext;
 
