@@ -3,7 +3,7 @@
 #include "Settings.h"
 
 #include "InputState.h"
-#include "input/Keyboard.h"
+#include "Keyboard.h"
 
 #include "Renderer.h"
 

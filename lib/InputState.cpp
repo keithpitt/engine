@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
 
 #include "InputState.h"
-#include "input/Keyboard.h"
+#include "Keyboard.h"
 #include "Debug.h"
 
 InputState::InputState() {
