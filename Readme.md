@@ -1,4 +1,4 @@
-Mandrill
+# Mandrill
 
 This is my awesome 2D game engine.
 
@@ -13,5 +13,10 @@ NFI yet.
 ### Compiling
 
 ```bash
-brew install sdl --HEAD # Using 2.0
+brew install sdl
+mkdir build
+cd build
+cmake ..
+make
+./demo
 ```
