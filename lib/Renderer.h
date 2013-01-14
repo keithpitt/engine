@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-class SDL_Surface;
+struct SDL_Surface;
 class InputState;
 
 class Renderer {
