@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL/SDL.h>
 #include "OpenGL.h"
 
 #include "InputState.h"
@@ -18,16 +18,10 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
   // Initialize SDL
   SDL_Init(SDL_INIT_VIDEO);
 
-  // Create a window. Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
-  window = SDL_CreateWindow(title,
-      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-      width, height,
-      SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
-
-  // Create an OpenGL context associated with the window.
-  glcontext = SDL_GL_CreateContext(window);
-  if (glcontext == NULL) {
-    fprintf(stderr, "Error during SDL_GL_CreateContext: %s\n", SDL_GetError());
+  // Create an SDL surface. Window mode MUST include SDL_OPENGL for use with OpenGL.
+  surface = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+  if (surface == NULL) {
+    fprintf(stderr, "Error during SDL_SetVideoMode: %s\n", SDL_GetError());
     SDL_Quit();
     exit(1);
   }
@@ -52,8 +46,9 @@ Renderer::Renderer(char *title, int width, int height, int fps) {
 Renderer::~Renderer() {
   log("Cleaning up window.");
 
-  SDL_GL_DeleteContext(glcontext);
-  SDL_DestroyWindow(window);
+  // TODO for SDL 1.2
+  // SDL_GL_DeleteContext(glcontext);
+  // SDL_DestroyWindow(window);
 }
 
 void Renderer::Update(InputState *inputState) {
@@ -70,7 +65,7 @@ void Renderer::BeginDraw() {
 }
 
 void Renderer::EndDraw() {
-  SDL_GL_SwapWindow(window);
+  SDL_GL_SwapBuffers();
 
   offset = SDL_GetTicks() - start;
   float fps = ((float)frames / (float)offset) * 1000;

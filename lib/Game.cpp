@@ -83,7 +83,8 @@ void freeImageErrorHandler(FREE_IMAGE_FORMAT format, const char* message) {
 };
 
 Game::Game() {
-  renderer = new Renderer("Hey!", RESOLUTION_WIDTH, RESOLUTION_HEIGHT, MAX_FPS);
+  char* title = (char *)"Hey!";
+  renderer = new Renderer(title, RESOLUTION_WIDTH, RESOLUTION_HEIGHT, MAX_FPS);
   inputState = new InputState();
 
   FreeImage_SetOutputMessage(freeImageErrorHandler);

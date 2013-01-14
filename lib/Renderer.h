@@ -3,9 +3,8 @@
 
 #include <stdint.h>
 
-class SDL_Window;
+class SDL_Surface;
 class InputState;
-typedef void *SDL_GLContext;
 
 class Renderer {
   private:
@@ -15,8 +14,7 @@ class Renderer {
 
     int frames;
 
-    SDL_Window *window;
-    SDL_GLContext glcontext;
+    SDL_Surface *surface;
 
   public:
     char *title;

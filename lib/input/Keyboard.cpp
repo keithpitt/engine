@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL/SDL.h>
 
 #include "Keyboard.h"
 #include "../Debug.h"
@@ -23,7 +23,7 @@ Keyboard::Keyboard() {
 }
 
 void Keyboard::UpdateSDLEvent(SDL_Event event) {
-  SDL_Keycode key   = event.key.keysym.sym;
+  SDLKey   key   = event.key.keysym.sym;
   uint16_t modifier = event.key.keysym.mod;
 
   // debug("%s key state change", SDL_GetKeyName(key));
@@ -33,7 +33,7 @@ void Keyboard::UpdateSDLEvent(SDL_Event event) {
     this->SetKey(key, true);
 
     // meta key pressed
-    if(event.key.keysym.mod & KMOD_LGUI)
+    if(event.key.keysym.mod & KMOD_META)
       this->SetMetaKey(true);
 
     // alt pressed

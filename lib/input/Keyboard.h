@@ -1,8 +1,7 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
-typedef union SDL_Event;
-
+#include <SDL/SDL.h>
 #include <vector>
 
 extern const int KEYBOARD_ESC;

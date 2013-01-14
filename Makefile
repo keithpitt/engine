@@ -2,7 +2,7 @@ Sources=input/Keyboard.cpp InputState.cpp Renderer.cpp Game.cpp
 Executable=Tiles
 
 CFlags=-c -Wall -g -Iinc
-LDFlags=$(shell sdl2-config --cflags --static-libs) \
+LDFlags=$(shell sdl-config --cflags --static-libs) \
 				-I/usr/local/Cellar/freeimage/3.15.4/include  \
 				-L/usr/local/Cellar/freeimage/3.15.4/lib \
 				-lfreeimage
