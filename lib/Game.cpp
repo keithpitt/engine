@@ -94,7 +94,7 @@ Game::Game() {
 int Game::Run() {
   running = true;
 
-  FIBITMAP *image = loadImage("assets/sprite.png");
+  FIBITMAP *image = loadImage("../assets/sprite.png");
   GLuint testTexture = createTexture(image);
   freeImage(image);
 

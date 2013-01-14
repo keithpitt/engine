@@ -4,28 +4,27 @@ cmake_minimum_required(VERSION 2.8.9)
 # Name of the project
 project(demo)
 
+# Standard C++
 SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++") 
 
-# Include other .cmake files
+# Include other .cmake modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Require OpenGL
+# Find and require packages
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
-
-# Require SDL
 find_package(SDL REQUIRED)
-include_directories(${SDL_INCLUDE_DIRS})
-
-# Require FreeImage
 find_package(FreeImage REQUIRED)
-include_directories(${FreeImage_INCLUDE_DIRS})
 
+# Include the CMakeLists file in lib
 add_subdirectory(lib)
 
+# Define out executable
 add_executable(demo main.cpp)
+
+# Link our libraries to the executable
 target_link_libraries(demo
-  ${OpenGL_LIBRARY_DIRS}
-  ${SDL_LIBRARY_DIRS}
-  ${FreeImage_LIBRARY_DIRS}
+  ${OPENGL_LIBRARIES}
+  ${SDL_LIBRARY}
+  SDLmain # Sadly not included in SDL_LIBRARY variable
+  ${FREEIMAGE_LIBRARY}
   Mandrill)
