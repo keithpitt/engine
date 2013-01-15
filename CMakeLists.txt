@@ -21,7 +21,7 @@ include_directories(${FREEIMAGE_INCLUDE_PATH})
 add_subdirectory(lib)
 
 # Define out executable
-add_executable(demo SDLMain.m main.cpp)
+add_executable(demo SDLMain.m SDLMain.h main.cpp)
 
 # Link our libraries to the executable
 target_link_libraries(demo
