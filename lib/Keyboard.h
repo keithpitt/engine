@@ -1,7 +1,7 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <vector>
 
 extern const int KEYBOARD_ESC;
