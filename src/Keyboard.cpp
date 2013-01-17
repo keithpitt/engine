@@ -1,7 +1,7 @@
 #include <SDL.h>
 
-#include "Keyboard.h"
-// #include "Debug.h"
+#include "Keyboard.hpp"
+// #include "Debug.hpp"
 
 const int KEYBOARD_ESC = SDLK_ESCAPE;
 

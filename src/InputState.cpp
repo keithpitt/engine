@@ -1,8 +1,8 @@
 #include <SDL.h>
 
-#include "InputState.h"
-#include "Keyboard.h"
-#include "Debug.h"
+#include "InputState.hpp"
+#include "Keyboard.hpp"
+#include "Debug.hpp"
 
 InputState::InputState() {
   keyboard = new Keyboard();

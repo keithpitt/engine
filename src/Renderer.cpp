@@ -1,10 +1,10 @@
 #include <SDL.h>
-#include "OpenGL.h"
+#include "OpenGL.hpp"
 
-#include "InputState.h"
-#include "Keyboard.h"
-#include "Renderer.h"
-#include "Debug.h"
+#include "InputState.hpp"
+#include "Keyboard.hpp"
+#include "Renderer.hpp"
+#include "Debug.hpp"
 
 // For more info about how we use SDL, see this:
 // http://wiki.libsdl.org/moin.cgi/SDL_GL_CreateContext?highlight=%28SDL%5C_OPENGL%29

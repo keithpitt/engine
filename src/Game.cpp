@@ -1,16 +1,16 @@
-#include "Game.h"
+#include "Game.hpp"
 
-#include "Settings.h"
+#include "Settings.hpp"
 
-#include "InputState.h"
-#include "Keyboard.h"
+#include "InputState.hpp"
+#include "Keyboard.hpp"
 
-#include "Renderer.h"
+#include "Renderer.hpp"
 
 #include <FreeImage.h>
 
-#include "Debug.h"
-#include "OpenGL.h"
+#include "Debug.hpp"
+#include "OpenGL.hpp"
 
 FIBITMAP* loadImage(const char* path) {
   // This will return the type of image. We could just manually pass in
