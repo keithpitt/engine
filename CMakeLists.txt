@@ -11,20 +11,22 @@ file(GLOB_RECURSE SOURCES "src2/*.cpp")
 set(HEADERS ...)
 file(GLOB_RECURSE HEADERS "src2/*.hpp")
 
-# Define what SFML components we want
-set(SFML_COMPONENTS system window graphics network audio)
-foreach(COMPONENT ${SFML_COMPONENTS})
-  set(SFML_LIBRARIES ${SFML_LIBRARIES} "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/sfml-${COMPONENT}.framework")
-endforeach()
+if(APPLE)
+
+endif()
+
+# Include out external dependencies
+set(EXT_LIBS ...)
+file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/Frameworks/*.framework")
 
 # we also need to find the system's OpenGL version
 find_package(OpenGL REQUIRED)
 
 # on OS X we also have to add '-framework Cocoa' as library.  This is
 # actually a bit of an hack but it's easy enough and reliable.
-set(EXTRA_LIBS "")
+set(SYSTEM_LIBS "")
 if (APPLE)
-set(EXTRA_LIBS ${EXTRA_LIBS} "-framework Cocoa -framework IOKit")
+  set(SYSTEM_LIBS ${SYSTEM_LIBS} "-framework Cocoa -framework IOKit")
 endif()
 
 # our own include folder and the SDL one are additional folders we
@@ -51,8 +53,8 @@ add_executable(
 target_link_libraries(
   ${PROJECT_NAME}
   ${OPENGL_LIBRARIES}
-  ${SFML_LIBRARIES}
-  ${EXTRA_LIBS}
+  ${EXT_LIBS}
+  ${SYSTEM_LIBS}
 )
 
 if(APPLE)
@@ -64,11 +66,11 @@ if(APPLE)
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND test -d ${BUNDLE_FRAMEWORK_PATH} || mkdir -p ${BUNDLE_FRAMEWORK_PATH})
 
-  # Go over all the SFML_COMPONENTS and add them to the final bundle
-  foreach(SFML_FRAMEWORK ${SFML_LIBRARIES})
+  # Go over all the external libraries and include them in our application
+  foreach(LIB ${EXT_LIBS})
     # Copy it to the bundle
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      COMMAND cp -r ${SFML_FRAMEWORK} ${BUNDLE_FRAMEWORK_PATH})
+      COMMAND cp -r ${LIB} ${BUNDLE_FRAMEWORK_PATH})
   endforeach()
 endif()
 
