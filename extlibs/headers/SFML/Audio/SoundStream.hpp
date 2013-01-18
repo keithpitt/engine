@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2012 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2009 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,350 +28,201 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Audio/Export.hpp>
-#include <SFML/Audio/SoundSource.hpp>
+#include <SFML/Audio/Sound.hpp>
 #include <SFML/System/Thread.hpp>
-#include <SFML/System/Time.hpp>
 #include <cstdlib>
 
 
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-/// \brief Abstract base class for streamed audio sources
-///
+/// SoundStream is a streamed sound, ie samples are acquired
+/// while the sound is playing. Use it for big sounds that would
+/// require hundreds of MB in memory (see Music),
+/// or for streaming sound from the network
 ////////////////////////////////////////////////////////////
-class SFML_AUDIO_API SoundStream : public SoundSource
+class SFML_API SoundStream : private Thread, private Sound
 {
 public :
 
+    using Sound::Status;
+    using Sound::Stopped;
+    using Sound::Paused;
+    using Sound::Playing;
+    using Sound::Pause;
+    using Sound::SetPitch;
+    using Sound::SetVolume;
+    using Sound::SetPosition;
+    using Sound::SetRelativeToListener;
+    using Sound::SetMinDistance;
+    using Sound::SetAttenuation;
+    using Sound::GetPitch;
+    using Sound::GetVolume;
+    using Sound::GetPosition;
+    using Sound::IsRelativeToListener;
+    using Sound::GetMinDistance;
+    using Sound::GetAttenuation;
+
     ////////////////////////////////////////////////////////////
-    /// \brief Structure defining a chunk of audio data to stream
-    ///
+    /// Structure defining a chunk of audio data to stream
     ////////////////////////////////////////////////////////////
     struct Chunk
     {
-        const Int16* samples;     ///< Pointer to the audio samples
-        std::size_t  sampleCount; ///< Number of samples pointed by Samples
+        const Int16* Samples;   ///< Pointer to the audio samples
+        std::size_t  NbSamples; ///< Number of samples pointed by Samples
     };
 
     ////////////////////////////////////////////////////////////
-    /// \brief Destructor
+    /// Virtual destructor
     ///
     ////////////////////////////////////////////////////////////
     virtual ~SoundStream();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Start or resume playing the audio stream
-    ///
-    /// This function starts the stream if it was stopped, resumes
-    /// it if it was paused, and restarts it from beginning if it
-    /// was it already playing.
-    /// This function uses its own thread so that it doesn't block
-    /// the rest of the program while the stream is played.
-    ///
-    /// \see pause, stop
+    /// Start playing the audio stream
     ///
     ////////////////////////////////////////////////////////////
-    void play();
+    void Play();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Pause the audio stream
-    ///
-    /// This function pauses the stream if it was playing,
-    /// otherwise (stream already paused or stopped) it has no effect.
-    ///
-    /// \see play, stop
+    /// Stop playing the audio stream
     ///
     ////////////////////////////////////////////////////////////
-    void pause();
+    void Stop();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Stop playing the audio stream
-    ///
-    /// This function stops the stream if it was playing or paused,
-    /// and does nothing if it was already stopped.
-    /// It also resets the playing position (unlike pause()).
-    ///
-    /// \see play, pause
-    ///
-    ////////////////////////////////////////////////////////////
-    void stop();
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Return the number of channels of the stream
-    ///
-    /// 1 channel means a mono sound, 2 means stereo, etc.
+    /// Return the number of channels (1 = mono, 2 = stereo)
     ///
     /// \return Number of channels
     ///
     ////////////////////////////////////////////////////////////
-    unsigned int getChannelCount() const;
+    unsigned int GetChannelsCount() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Get the stream sample rate of the stream
+    /// Get the stream sample rate
     ///
-    /// The sample rate is the number of audio samples played per
-    /// second. The higher, the better the quality.
-    ///
-    /// \return Sample rate, in number of samples per second
+    /// \return Stream frequency (number of samples per second)
     ///
     ////////////////////////////////////////////////////////////
-    unsigned int getSampleRate() const;
+    unsigned int GetSampleRate() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Get the current status of the stream (stopped, paused, playing)
+    /// Get the status of the stream (stopped, paused, playing)
     ///
-    /// \return Current status
+    /// \return Current status of the sound
     ///
     ////////////////////////////////////////////////////////////
-    Status getStatus() const;
+    Status GetStatus() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Change the current playing position of the stream
+    /// Get the current playing position of the stream
     ///
-    /// The playing position can be changed when the stream is
-    /// either paused or playing.
-    ///
-    /// \param timeOffset New playing position, from the beginning of the stream
-    ///
-    /// \see getPlayingOffset
+    /// \return Current playing position, expressed in seconds
     ///
     ////////////////////////////////////////////////////////////
-    void setPlayingOffset(Time timeOffset);
+    float GetPlayingOffset() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Get the current playing position of the stream
+    /// Set the stream loop state.
+    /// This parameter is disabled by default
     ///
-    /// \return Current playing position, from the beginning of the stream
-    ///
-    /// \see setPlayingOffset
+    /// \param Loop : True to play in loop, false to play once
     ///
     ////////////////////////////////////////////////////////////
-    Time getPlayingOffset() const;
+    void SetLoop(bool Loop);
 
     ////////////////////////////////////////////////////////////
-    /// \brief Set whether or not the stream should loop after reaching the end
+    /// Tell whether or not the stream is looping
     ///
-    /// If set, the stream will restart from beginning after
-    /// reaching the end and so on, until it is stopped or
-    /// setLoop(false) is called.
-    /// The default looping state for streams is false.
-    ///
-    /// \param loop True to play in loop, false to play once
-    ///
-    /// \see getLoop
+    /// \return True if the music is looping, false otherwise
     ///
     ////////////////////////////////////////////////////////////
-    void setLoop(bool loop);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Tell whether or not the stream is in loop mode
-    ///
-    /// \return True if the stream is looping, false otherwise
-    ///
-    /// \see setLoop
-    ///
-    ////////////////////////////////////////////////////////////
-    bool getLoop() const;
+    bool GetLoop() const;
 
 protected :
 
     ////////////////////////////////////////////////////////////
-    /// \brief Default constructor
-    ///
-    /// This constructor is only meant to be called by derived classes.
+    /// Default constructor
     ///
     ////////////////////////////////////////////////////////////
     SoundStream();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Define the audio stream parameters
+    /// Set the audio stream parameters, you must call it before Play()
     ///
-    /// This function must be called by derived classes as soon
-    /// as they know the audio settings of the stream to play.
-    /// Any attempt to manipulate the stream (play(), ...) before
-    /// calling this function will fail.
-    /// It can be called multiple times if the settings of the
-    /// audio stream change, but only when the stream is stopped.
-    ///
-    /// \param channelCount Number of channels of the stream
-    /// \param sampleRate   Sample rate, in samples per second
+    /// \param ChannelsCount : Number of channels
+    /// \param SampleRate :    Sample rate
     ///
     ////////////////////////////////////////////////////////////
-    void initialize(unsigned int channelCount, unsigned int sampleRate);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Request a new chunk of audio samples from the stream source
-    ///
-    /// This function must be overriden by derived classes to provide
-    /// the audio samples to play. It is called continuously by the
-    /// streaming loop, in a separate thread.
-    /// The source can choose to stop the streaming loop at any time, by
-    /// returning false to the caller.
-    ///
-    /// \param data Chunk of data to fill
-    ///
-    /// \return True to continue playback, false to stop
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual bool onGetData(Chunk& data) = 0;
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Change the current playing position in the stream source
-    ///
-    /// This function must be overriden by derived classes to
-    /// allow random seeking into the stream source.
-    ///
-    /// \param timeOffset New playing position, relative to the beginning of the stream
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual void onSeek(Time timeOffset) = 0;
+    void Initialize(unsigned int ChannelsCount, unsigned int SampleRate);
 
 private :
 
     ////////////////////////////////////////////////////////////
-    /// \brief Function called as the entry point of the thread
-    ///
-    /// This function starts the streaming loop, and returns
-    /// only when the sound is stopped.
+    /// /see Thread::Run
     ///
     ////////////////////////////////////////////////////////////
-    void streamData();
+    virtual void Run();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Fill a new buffer with audio samples, and append
-    ///        it to the playing queue
+    /// Called when the sound restarts
     ///
-    /// This function is called as soon as a buffer has been fully
-    /// consumed; it fills it again and inserts it back into the
-    /// playing queue.
-    ///
-    /// \param buffer Number of the buffer to fill (in [0, BufferCount])
-    ///
-    /// \return True if the stream source has requested to stop, false otherwise
+    /// \return If false is returned, the playback is aborted
     ///
     ////////////////////////////////////////////////////////////
-    bool fillAndPushBuffer(unsigned int bufferNum);
+    virtual bool OnStart();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Fill the audio buffers and put them all into the playing queue
+    /// Called each time new audio data is needed to feed the stream
     ///
-    /// This function is called when playing starts and the
-    /// playing queue is empty.
+    /// \param Data : New chunk of data to stream
     ///
-    /// \return True if the derived class has requested to stop, false otherwise
+    /// \return True to continue playback, false to stop
     ///
     ////////////////////////////////////////////////////////////
-    bool fillQueue();
+    virtual bool OnGetData(Chunk& Data) = 0;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Clear all the audio buffers and empty the playing queue
+    /// Fill a new buffer with audio data, and push it to the
+    /// playing queue
     ///
-    /// This function is called when the stream is stopped.
+    /// \param Buffer : Number of the buffer to fill (in [0, BuffersCount])
+    ///
+    /// \return True if the derived class has requested to stop
     ///
     ////////////////////////////////////////////////////////////
-    void clearQueue();
+    bool FillAndPushBuffer(unsigned int BufferNum);
 
-    enum
-    {
-        BufferCount = 3 ///< Number of audio buffers used by the streaming loop
-    };
+    ////////////////////////////////////////////////////////////
+    /// Fill the buffers queue with all available buffers
+    ///
+    /// \return True if the derived class has requested to stop
+    ///
+    ////////////////////////////////////////////////////////////
+    bool FillQueue();
+
+    ////////////////////////////////////////////////////////////
+    /// Clear the queue of any remaining buffers
+    ///
+    ////////////////////////////////////////////////////////////
+    void ClearQueue();
+
+    enum {BuffersCount = 3};
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    Thread        m_thread;                  ///< Thread running the background tasks
-    bool          m_isStreaming;             ///< Streaming state (true = playing, false = stopped)
-    unsigned int  m_buffers[BufferCount];    ///< Sound buffers used to store temporary audio data
-    unsigned int  m_channelCount;            ///< Number of channels (1 = mono, 2 = stereo, ...)
-    unsigned int  m_sampleRate;              ///< Frequency (samples / second)
-    Uint32        m_format;                  ///< Format of the internal sound buffers
-    bool          m_loop;                    ///< Loop flag (true to loop, false to play once)
-    Uint64        m_samplesProcessed;        ///< Number of buffers processed since beginning of the stream
-    bool          m_endBuffers[BufferCount]; ///< Each buffer is marked as "end buffer" or not, for proper duration calculation
+    bool          myIsStreaming;              ///< Streaming state (true = playing, false = stopped)
+    unsigned int  myBuffers[BuffersCount];    ///< Sound buffers used to store temporary audio data
+    unsigned int  myChannelsCount;            ///< Number of channels (1 = mono, 2 = stereo, ...)
+    unsigned int  mySampleRate;               ///< Frequency (samples / second)
+    unsigned long myFormat;                   ///< Format of the internal sound buffers
+    bool          myLoop;                     ///< Loop flag (true to loop, false to play once)
+    unsigned int  mySamplesProcessed;         ///< Number of buffers processed since beginning of the stream
+    bool          myEndBuffers[BuffersCount]; ///< Each buffer is marked as "end buffer" or not, for proper duration calculation
 };
 
 } // namespace sf
 
 
 #endif // SFML_SOUNDSTREAM_HPP
-
-
-////////////////////////////////////////////////////////////
-/// \class sf::SoundStream
-/// \ingroup audio
-///
-/// Unlike audio buffers (see sf::SoundBuffer), audio streams
-/// are never completely loaded in memory. Instead, the audio
-/// data is acquired continuously while the stream is playing.
-/// This behaviour allows to play a sound with no loading delay,
-/// and keeps the memory consumption very low.
-///
-/// Sound sources that need to be streamed are usually big files
-/// (compressed audio musics that would eat hundreds of MB in memory)
-/// or files that would take a lot of time to be received
-/// (sounds played over the network).
-///
-/// sf::SoundStream is a base class that doesn't care about the
-/// stream source, which is left to the derived class. SFML provides
-/// a built-in specialization for big files (see sf::Music).
-/// No network stream source is provided, but you can write your own
-/// by combining this class with the network module.
-///
-/// A derived class has to override two virtual functions:
-/// \li onGetData fills a new chunk of audio data to be played
-/// \li onSeek changes the current playing position in the source
-///
-/// It is important to note that each SoundStream is played in its
-/// own separate thread, so that the streaming loop doesn't block the
-/// rest of the program. In particular, the OnGetData and OnSeek
-/// virtual functions may sometimes be called from this separate thread.
-/// It is important to keep this in mind, because you may have to take
-/// care of synchronization issues if you share data between threads. 
-///
-/// Usage example:
-/// \code
-/// class CustomStream : public sf::SoundStream
-/// {
-/// public :
-///
-///     bool open(const std::string& location)
-///     {
-///         // Open the source and get audio settings
-///         ...
-///         unsigned int channelCount = ...;
-///         unsigned int sampleRate = ...;
-///
-///         // Initialize the stream -- important!
-///         initialize(channelCount, sampleRate);
-///     }
-///
-/// private :
-///
-///     virtual bool onGetData(Chunk& data)
-///     {
-///         // Fill the chunk with audio data from the stream source
-///         data.samples = ...;
-///         data.sampleCount = ...;
-///
-///         // Return true to continue playing
-///         return true;
-///     }
-///
-///     virtual void onSeek(Uint32 timeOffset)
-///     {
-///         // Change the current position in the stream source
-///         ...
-///     }
-/// }
-///
-/// // Usage
-/// CustomStream stream;
-/// stream.open("path/to/stream");
-/// stream.play();
-/// \endcode
-///
-/// \see sf::Music
-///
-////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2012 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2009 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,9 +29,9 @@
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-/// \brief Utility template class for manipulating
-///        2-dimensional vectors
-///
+/// Vector2 is an utility class for manipulating 2 dimensional
+/// vectors. Template parameter defines the type of coordinates
+/// (integer, float, ...)
 ////////////////////////////////////////////////////////////
 template <typename T>
 class Vector2
@@ -39,35 +39,19 @@ class Vector2
 public :
 
     ////////////////////////////////////////////////////////////
-    /// \brief Default constructor
-    ///
-    /// Creates a Vector2(0, 0).
+    /// Default constructor
     ///
     ////////////////////////////////////////////////////////////
     Vector2();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Construct the vector from its coordinates
+    /// Construct the vector from its coordinates
     ///
-    /// \param X X coordinate
-    /// \param Y Y coordinate
+    /// \param X : X coordinate
+    /// \param Y : Y coordinate
     ///
     ////////////////////////////////////////////////////////////
     Vector2(T X, T Y);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Construct the vector from another type of vector
-    ///
-    /// This constructor doesn't replace the copy constructor,
-    /// it's called only when U != T.
-    /// A call to this constructor will fail to compile if U
-    /// is not convertible to T.
-    ///
-    /// \param vector Vector to convert
-    ///
-    ////////////////////////////////////////////////////////////
-    template <typename U>
-    explicit Vector2(const Vector2<U>& vector);
 
     ////////////////////////////////////////////////////////////
     // Member data
@@ -77,225 +61,155 @@ public :
 };
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of unary operator -
+/// Operator - overload ; returns the opposite of a vector
 ///
-/// \param right Vector to negate
+/// \param V : Vector to negate
 ///
-/// \return Memberwise opposite of the vector
+/// \return -V
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator -(const Vector2<T>& right);
+Vector2<T> operator -(const Vector2<T>& V);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator +=
+/// Operator += overload ; add two vectors and assign to the first op
 ///
-/// This operator performs a memberwise addition of both vectors,
-/// and assigns the result to \a left.
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
-///
-/// \return Reference to \a left
+/// \return V1 + V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T>& operator +=(Vector2<T>& left, const Vector2<T>& right);
+Vector2<T>& operator +=(Vector2<T>& V1, const Vector2<T>& V2);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator -=
+/// Operator -= overload ; subtract two vectors and assign to the first op
 ///
-/// This operator performs a memberwise subtraction of both vectors,
-/// and assigns the result to \a left.
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
-///
-/// \return Reference to \a left
+/// \return V1 - V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T>& operator -=(Vector2<T>& left, const Vector2<T>& right);
+Vector2<T>& operator -=(Vector2<T>& V1, const Vector2<T>& V2);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator +
+/// Operator + overload ; adds two vectors
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \return Memberwise addition of both vectors
+/// \return V1 + V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator +(const Vector2<T>& left, const Vector2<T>& right);
+Vector2<T> operator +(const Vector2<T>& V1, const Vector2<T>& V2);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator -
+/// Operator - overload ; subtracts two vectors
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \return Memberwise subtraction of both vectors
+/// \return V1 - V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator -(const Vector2<T>& left, const Vector2<T>& right);
+Vector2<T> operator -(const Vector2<T>& V1, const Vector2<T>& V2);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator *
+/// Operator * overload ; multiply a vector by a scalar value
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a scalar value)
+/// \param V : Vector
+/// \param X : Scalar value
 ///
-/// \return Memberwise multiplication by \a right
+/// \return V * X
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator *(const Vector2<T>& left, T right);
+Vector2<T> operator *(const Vector2<T>& V, T X);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator *
+/// Operator * overload ; multiply a scalar value by a vector
 ///
-/// \param left  Left operand (a scalar value)
-/// \param right Right operand (a vector)
+/// \param X : Scalar value
+/// \param V : Vector
 ///
-/// \return Memberwise multiplication by \a left
+/// \return X * V
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator *(T left, const Vector2<T>& right);
+Vector2<T> operator *(T X, const Vector2<T>& V);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator *=
+/// Operator *= overload ; multiply-assign a vector by a scalar value
 ///
-/// This operator performs a memberwise multiplication by \a right,
-/// and assigns the result to \a left.
+/// \param V : Vector
+/// \param X : Scalar value
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a scalar value)
-///
-/// \return Reference to \a left
+/// \return V * X
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T>& operator *=(Vector2<T>& left, T right);
+Vector2<T>& operator *=(Vector2<T>& V, T X);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator /
+/// Operator / overload ; divide a vector by a scalar value
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a scalar value)
+/// \param V : Vector
+/// \param X : Scalar value
 ///
-/// \return Memberwise division by \a right
+/// \return V / X
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T> operator /(const Vector2<T>& left, T right);
+Vector2<T> operator /(const Vector2<T>& V, T X);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator /=
+/// Operator /= overload ; divide-assign a vector by a scalar value
 ///
-/// This operator performs a memberwise division by \a right,
-/// and assigns the result to \a left.
+/// \param V : Vector
+/// \param X : Scalar value
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a scalar value)
-///
-/// \return Reference to \a left
+/// \return V / X
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-Vector2<T>& operator /=(Vector2<T>& left, T right);
+Vector2<T>& operator /=(Vector2<T>& V, T X);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator ==
+/// Operator == overload ; compares the equality of two vectors
 ///
-/// This operator compares strict equality between two vectors.
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
-///
-/// \return True if \a left is equal to \a right
+/// \return True if V1 is equal to V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-bool operator ==(const Vector2<T>& left, const Vector2<T>& right);
+bool operator ==(const Vector2<T>& V1, const Vector2<T>& V2);
 
 ////////////////////////////////////////////////////////////
-/// \relates Vector2
-/// \brief Overload of binary operator !=
+/// Operator != overload ; compares the difference of two vectors
 ///
-/// This operator compares strict difference between two vectors.
+/// \param V1 : First vector
+/// \param V2 : Second vector
 ///
-/// \param left  Left operand (a vector)
-/// \param right Right operand (a vector)
-///
-/// \return True if \a left is not equal to \a right
+/// \return True if V1 is different than V2
 ///
 ////////////////////////////////////////////////////////////
 template <typename T>
-bool operator !=(const Vector2<T>& left, const Vector2<T>& right);
+bool operator !=(const Vector2<T>& V1, const Vector2<T>& V2);
 
 #include <SFML/System/Vector2.inl>
 
 // Define the most common types
-typedef Vector2<int>          Vector2i;
-typedef Vector2<unsigned int> Vector2u;
-typedef Vector2<float>        Vector2f;
+typedef Vector2<int>   Vector2i;
+typedef Vector2<float> Vector2f;
 
 } // namespace sf
 
 
 #endif // SFML_VECTOR2_HPP
-
-
-////////////////////////////////////////////////////////////
-/// \class sf::Vector2
-/// \ingroup system
-///
-/// sf::Vector2 is a simple class that defines a mathematical
-/// vector with two coordinates (x and y). It can be used to
-/// represent anything that has two dimensions: a size, a point,
-/// a velocity, etc.
-///
-/// The template parameter T is the type of the coordinates. It
-/// can be any type that supports arithmetic operations (+, -, /, *)
-/// and comparisons (==, !=), for example int or float.
-///
-/// You generally don't have to care about the templated form (sf::Vector2<T>),
-/// the most common specializations have special typedefs:
-/// \li sf::Vector2<float> is sf::Vector2f
-/// \li sf::Vector2<int> is sf::Vector2i
-/// \li sf::Vector2<unsigned int> is sf::Vector2u
-///
-/// The sf::Vector2 class has a small and simple interface, its x and y members
-/// can be accessed directly (there's no accessor like setX(), getX()) and it
-/// contains no mathematical function like dot product, cross product, length, etc.
-///
-/// Usage example:
-/// \code
-/// sf::Vector2f v1(16.5f, 24.f);
-/// v1.x = 18.2f;
-/// float y = v1.y;
-///
-/// sf::Vector2f v2 = v1 * 5.f;
-/// sf::Vector2f v3;
-/// v3 = v1 + v2;
-///
-/// bool different = (v2 != v3);
-/// \endcode
-///
-/// Note: for 3-dimensional vectors, see sf::Vector3.
-///
-////////////////////////////////////////////////////////////
