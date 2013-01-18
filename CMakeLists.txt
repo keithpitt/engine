@@ -4,12 +4,18 @@ cmake_minimum_required(VERSION 2.8.9)
 # The application name
 project(Mandrill)
 
-# Include out external dependencies
-set(EXT_LIBS ...)
-set(SYSTEM_LIBS ...)
+# Find and add the OpenGL libraries to it
+find_package(OpenGL REQUIRED)
+set(SYSTEM_LIBS ${SYSTEM_LIBS} ${OPENGL_LIBRARIES})
 
+# Include out external dependencies
 if(APPLE)
-  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.framework")
+  # Set the bundle path
+  set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app")
+  set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
+
+  # Framework files to be included
+  file(GLOB EXT_OPTIMIZED_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.framework")
 
   # On OS X we also have to add '-framework Cocoa' and IOKit as library.  This is
   # actually a bit of an hack but it's easy enough and reliable.
@@ -17,16 +23,21 @@ if(APPLE)
 endif()
 
 if(WIN32)
-  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-libs-msvc/*.dll")
+  # Define the output directory
+  set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
+  set(EXT_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-msvc")
+
+  # Optimized dependencies for linking and shipping
+  file(GLOB EXT_OPTIMIZED_LIBS "${EXT_LIB_PATH}/release/*.lib")
+  file(GLOB EXT_OPTIMIZED_DLLS "${EXT_LIB_PATH}/release/*.dll")
+
+  # Debugging dependencies for linking and shipping
+  file(GLOB EXT_DEBUG_LIBS "${EXT_LIB_PATH}/debug/*.lib")
+  file(GLOB EXT_DEBUG_DLLS "${EXT_LIB_PATH}/debug/*.dll")
 endif()
 
-# We also need to find the system's OpenGL version
-find_package(OpenGL REQUIRED)
-
 # Include our extlibs headers.
-include_directories(
-  "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/headers"
-)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/extlibs/headers")
 
 # A list of header and source files used by your application.
 file(GLOB_RECURSE SOURCES "src2/*.cpp")
@@ -42,18 +53,20 @@ add_executable(
   MACOSX_BUNDLE
   ${SOURCES}
   ${HEADERS}
-  ${EXT_LIBS}
 )
 
-# Lastly we have to link the OpenGL libraries, SDL and the cocoa
-# framework to our application.  The latter is only happening on
-# OS X obviously.
-target_link_libraries(
-  ${PROJECT_NAME}
-  ${OPENGL_LIBRARIES}
-  ${EXT_LIBS}
-  ${SYSTEM_LIBS}
-)
+# Link the system libraries to the target
+target_link_libraries(${PROJECT_NAME} ${SYSTEM_LIBS})
+
+# We'll always have a release lib, but not always a debug one. So if we have a debug one,
+# link the optimized and the debug versions. If we don't have it, just the release one.
+if(DEFINED EXT_DEBUG_LIBS)
+  SET(LINK_LIBRARY optimized ${EXT_OPTIMIZED_LIBS} debug ${EXT_DEBUG_LIBS})
+elseif(DEFINED EXT_OPTIMIZED_LIBS)
+  SET(LINK_LIBRARY ${EXT_OPTIMIZED_LIBS})
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${LINK_LIBRARY})
 
 if(APPLE)
   # There is a bug in cmake. ${CMAKE_COMMAND} -E copy breaks when you try to copy a folder.
@@ -63,21 +76,17 @@ if(APPLE)
 
   # Copying frameworks like this works like a charm in Xcode
   if(XCODE)
-    set_source_files_properties(${EXT_LIBS} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
+    set_source_files_properties(${EXT_OPTIMIZED_LIBS} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
   endif()
 
   # Manually copy over the frameworks when using a makefile
   if(UNIX)
-    # Set the bundle path
-    set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app")
-    set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
-
     # Make the framework folder (if it doesn't exist already)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
       COMMAND mkdir -p ${BUNDLE_FRAMEWORK_PATH})
 
     # Go over all the external libraries and include them in our application
-    foreach(LIB ${EXT_LIBS})
+    foreach(LIB ${EXT_OPTIMIZED_LIBS})
       # Copy it to the bundle
       add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND cp -r ${LIB} ${BUNDLE_FRAMEWORK_PATH})
@@ -86,10 +95,13 @@ if(APPLE)
 endif()
 
 if(WIN32)
-  # Go over all the external libraries and include them in our application
-  #foreach(LIB ${EXT_LIBS})
-    #add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      #COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      #${LIB} ${VS_OUTPUT_DIR})
-  #endforeach()
+  # Ship the DLL's with the package. I know we're not doing release/debug testing.
+  # But I have no idea how to do it...
+  foreach(DLL ${EXT_OPTIMIZED_DLLS})
+    get_filename_component(DLL_NAME ${DLL} NAME EXT)
+
+    # Copy the dll over.
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${DLL} $<TARGET_FILE_DIR:${PROJECT_NAME}>/${DLL_NAME})
+  endforeach()
 endif()

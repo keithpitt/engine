@@ -12,7 +12,7 @@
 int main()
 {
     // Create the main window
-    sf::Window App(sf::VideoMode(800, 600, 32), "SFML OpenGL");
+    sf::Window App(sf::VideoMode(800, 600, 32), "OpenGL");
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
