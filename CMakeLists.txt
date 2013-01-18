@@ -53,6 +53,7 @@ add_executable(
   MACOSX_BUNDLE
   ${SOURCES}
   ${HEADERS}
+  ${EXT_OPTIMIZED_LIBS} # This is here so we can set source_file_properties on it for Xcode
 )
 
 # Link the system libraries to the target
@@ -76,11 +77,10 @@ if(APPLE)
 
   # Copying frameworks like this works like a charm in Xcode
   if(XCODE)
-    set_source_files_properties(${EXT_OPTIMIZED_LIBS} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
-  endif()
-
-  # Manually copy over the frameworks when using a makefile
-  if(UNIX)
+    foreach(LIB ${EXT_OPTIMIZED_LIBS})
+      set_source_files_properties(${LIB} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
+    endforeach()
+  else()
     # Make the framework folder (if it doesn't exist already)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
       COMMAND mkdir -p ${BUNDLE_FRAMEWORK_PATH})
