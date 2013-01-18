@@ -19,6 +19,10 @@ NFI yet.
 
 ## Mac OSX
 
+```bash
+export SFML_ROOT=/Users/keithpitt/Development/sfml
+```
+
 cmake -D CMAKE_BUILD_TYPE=Debug -D BUILD_SHARED_LIBS=false .
 cmake -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=false .
 # cmake -D CMAKE_BUILD_TYPE=Release -D SFML_BUILD_FRAMEWORKS=true .
