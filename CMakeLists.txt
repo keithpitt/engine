@@ -11,14 +11,11 @@ file(GLOB_RECURSE SOURCES "src2/*.cpp")
 set(HEADERS ...)
 file(GLOB_RECURSE HEADERS "src2/*.hpp")
 
-# Include FindSFML.cmake and friends
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{SFML_ROOT}/cmake/Modules")
-
 # Define what SFML components we want
 set(SFML_COMPONENTS system window graphics network audio)
-
-# Find SFML
-find_package(SFML 2 COMPONENTS ${SFML_COMPONENTS} REQUIRED)
+foreach(COMPONENT ${SFML_COMPONENTS})
+  set(SFML_LIBRARIES ${SFML_LIBRARIES} "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/sfml-${COMPONENT}.framework")
+endforeach()
 
 # we also need to find the system's OpenGL version
 find_package(OpenGL REQUIRED)
@@ -33,7 +30,7 @@ endif()
 # our own include folder and the SDL one are additional folders we
 # want to have on our path.
 include_directories(
-  ${SFML_INCLUDE_DIR}
+  "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/headers"
 )
 
 # Now we define what makes our executable.  First thing is the name,
@@ -68,11 +65,7 @@ if(APPLE)
     COMMAND test -d ${BUNDLE_FRAMEWORK_PATH} || mkdir -p ${BUNDLE_FRAMEWORK_PATH})
 
   # Go over all the SFML_COMPONENTS and add them to the final bundle
-  foreach(COMPONENT ${SFML_COMPONENTS})
-    # Construct the framework lib release variable
-    string(TOUPPER ${COMPONENT} COMPONENT_UPPER)
-    set(SFML_FRAMEWORK ${SFML_${COMPONENT_UPPER}_LIBRARY_RELEASE})
-
+  foreach(SFML_FRAMEWORK ${SFML_LIBRARIES})
     # Copy it to the bundle
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
       COMMAND cp -r ${SFML_FRAMEWORK} ${BUNDLE_FRAMEWORK_PATH})
