@@ -19,13 +19,16 @@ NFI yet.
 
 ## Mac OSX
 
-### Compiling
+cmake -D CMAKE_BUILD_TYPE=Debug -D BUILD_SHARED_LIBS=false .
+cmake -D CMAKE_BUILD_TYPE=Release -D SFML_BUILD_FRAMEWORKS=true .
+
+### Compiling SDL
 
 ```bash
-brew install sdl
+hg clone http://hg.libsdl.org/SDL libs/sdl # checks out latest
+cd libs/sdl
 mkdir build
 cd build
 cmake ..
 make
-./demo
 ```

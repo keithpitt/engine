@@ -1,61 +1,73 @@
-# Specify the version being used aswell as the language
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 2.6)
 
-# Name of the project
-project(demo)
+project(Mandrill)
 
-set(TARGET demo)
+# Include the SFML cmake file
 
-# Used to define custom compile options
-set(EXTRA_LIBS "")
+# A list of header and source files used by your application.
+set(SOURCES ...)
+file(GLOB_RECURSE SOURCES "src2/*.cpp")
 
-IF(APPLE)
-  set(VENDOR_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/vendor/osx")
-ENDIF()
+set(HEADERS ...)
+file(GLOB_RECURSE HEADERS "src2/*.hpp")
 
-# Include our vendor directory in the search paths.
-# set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${VENDOR_DIRECTORY})
-# set(CMAKE_INCLUDE_PATH ${CMAKE_LIBRARY_PATH} ${VENDOR_DIRECTORY})
-# include_directories(${VENDOR_DIRECTORY})
+# Find SFML
+set(SFML_ROOT $ENV{SFML_ROOT})
+set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules")
+# set(SFML_STATIC_LIBRARIES TRUE)
+find_package(SFML 2 COMPONENTS system window graphics network audio REQUIRED)
 
-# Include other .cmake modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-# Find and require packages
+# we also need to find the system's OpenGL version
 find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
 
-find_package(SDL REQUIRED)
-include_directories(${SDL_INCLUDE_DIR})
+# on OS X we also have to add '-framework Cocoa' as library.  This is
+# actually a bit of an hack but it's easy enough and reliable.
+set(EXTRA_LIBS "")
+if (APPLE)
+set(EXTRA_LIBS ${EXTRA_LIBS} "-framework Cocoa -framework IOKit")
+endif()
 
-find_package(FreeImage REQUIRED)
-include_directories(${FREEIMAGE_INCLUDE_PATH})
+# our own include folder and the SDL one are additional folders we
+# want to have on our path.
+include_directories(
+  ${SFML_INCLUDE_DIR}
+)
 
-# Include the CMakeLists file in lib
-add_subdirectory(lib)
-
-# Define out executable
+# Now we define what makes our executable.  First thing is the name,
+# WIN32 is needed to make this a Win32 GUI application, MACOSX_BUNDLE
+# activates bundle mode on OS X and the last two things are our source
+# and header files this executable consists of.
 add_executable(
-  ${TARGET}
+  ${PROJECT_NAME}
   WIN32
   MACOSX_BUNDLE
-  SDLMain.m
-  SDLMain.h
-  main.cpp
+  ${SOURCES}
+  ${HEADERS}
 )
 
-# Link our libraries to the executable
+# Lastly we have to link the OpenGL libraries, SDL and the cocoa
+# framework to our application.  The latter is only happening on
+# OS X obviously.
 target_link_libraries(
-  ${TARGET}
+  ${PROJECT_NAME}
   ${OPENGL_LIBRARIES}
-  ${SDL_LIBRARY}
-  ${FREEIMAGE_LIBRARY}
-  Mandrill
+  ${SFML_LIBRARIES}
+  ${EXTRA_LIBS}
 )
 
-IF(APPLE)
-  set(BUNDLE_BINARY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.app/Contents/MacOS/${TARGET})
+if(WIN32)
+    set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${SDL_FOLDER}/VisualC/SDL/Release/SDL2.dll ${VS_OUTPUT_DIR}/SDL2.dll)
+endif()
+if(APPLE)
+  # Find the Frameworks directrory
+  set(FRAMEWORK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Frameworks)
 
-  add_custom_command(TARGET ${TARGET} POST_BUILD
-    COMMAND "python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/frameworkify.py ${BUNDLE_BINARY} ${SDL_LIBRARY}")
-ENDIF()
+  message(${SFML_ROOT}/lib/*.framework)
+
+  # Copy all the built frameworks from SFML into the bundle
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND mkdir -p ${FRAMEWORK_DIR} && cp -r ${SFML_ROOT}/lib/*.framework ${FRAMEWORK_DIR})
+endif()
