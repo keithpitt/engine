@@ -4,36 +4,29 @@ cmake_minimum_required(VERSION 2.8.9)
 # The application name
 project(Mandrill)
 
-# A list of header and source files used by your application.
-set(SOURCES ...)
-file(GLOB_RECURSE SOURCES "src2/*.cpp")
-
-set(HEADERS ...)
-file(GLOB_RECURSE HEADERS "src2/*.hpp")
-
-if(APPLE)
-
-endif()
-
 # Include out external dependencies
 set(EXT_LIBS ...)
-file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/Frameworks/*.framework")
-
-# we also need to find the system's OpenGL version
-find_package(OpenGL REQUIRED)
-
-# on OS X we also have to add '-framework Cocoa' as library.  This is
-# actually a bit of an hack but it's easy enough and reliable.
 set(SYSTEM_LIBS "")
-if (APPLE)
+
+if(APPLE)
+  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/Frameworks/*.framework")
+
+  # On OS X we also have to add '-framework Cocoa' and IOKit as library.  This is
+  # actually a bit of an hack but it's easy enough and reliable.
   set(SYSTEM_LIBS ${SYSTEM_LIBS} "-framework Cocoa -framework IOKit")
 endif()
 
-# our own include folder and the SDL one are additional folders we
-# want to have on our path.
+# We also need to find the system's OpenGL version
+find_package(OpenGL REQUIRED)
+
+# Include our extlibs headers.
 include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/headers"
 )
+
+# A list of header and source files used by your application.
+file(GLOB_RECURSE SOURCES "src2/*.cpp")
+file(GLOB_RECURSE HEADERS "src2/*.hpp")
 
 # Now we define what makes our executable.  First thing is the name,
 # WIN32 is needed to make this a Win32 GUI application, MACOSX_BUNDLE
@@ -45,6 +38,7 @@ add_executable(
   MACOSX_BUNDLE
   ${SOURCES}
   ${HEADERS}
+  ${EXT_LIBS}
 )
 
 # Lastly we have to link the OpenGL libraries, SDL and the cocoa
@@ -58,20 +52,33 @@ target_link_libraries(
 )
 
 if(APPLE)
-  # Set the bundle path
-  set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/")
-  set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
+  # There is a bug in cmake. ${CMAKE_COMMAND} -E copy breaks when you try to copy a folder.
+  # It ends up just copying the folder, and none of the contents. As a result, we have 2
+  # different ways of adding frameworks to the project :( That means I can't use a cross xcode/unix
+  # method of copying the frameworks across.
 
-  # Make the framework folder (if it doesn't exist already)
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND test -d ${BUNDLE_FRAMEWORK_PATH} || mkdir -p ${BUNDLE_FRAMEWORK_PATH})
+  # Copying frameworks like this works like a charm in Xcode
+  if(XCODE)
+    set_source_files_properties(${EXT_LIBS} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
+  endif()
 
-  # Go over all the external libraries and include them in our application
-  foreach(LIB ${EXT_LIBS})
-    # Copy it to the bundle
+  # Manually copy over the frameworks when using a makefile
+  if(UNIX)
+    # Set the bundle path
+    set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app")
+    set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
+
+    # Make the framework folder (if it doesn't exist already)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      COMMAND cp -r ${LIB} ${BUNDLE_FRAMEWORK_PATH})
-  endforeach()
+      COMMAND mkdir -p ${BUNDLE_FRAMEWORK_PATH})
+
+    # Go over all the external libraries and include them in our application
+    foreach(LIB ${EXT_LIBS})
+      # Copy it to the bundle
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND cp -r ${LIB} ${BUNDLE_FRAMEWORK_PATH})
+    endforeach()
+  endif()
 endif()
 
 if(WIN32)
