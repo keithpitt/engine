@@ -22,99 +22,69 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_MUSIC_HPP
-#define SFML_MUSIC_HPP
+#ifndef SFML_SOCKETHELPERWIN32_HPP
+#define SFML_SOCKETHELPERWIN32_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Audio/SoundStream.hpp>
-#include <string>
-#include <vector>
+#include <winsock2.h>
 
 
 namespace sf
 {
-namespace priv
-{
-    class SoundFile;
-}
-
 ////////////////////////////////////////////////////////////
-/// Music defines a big sound played using streaming,
-/// so usually what we call a music :)
+/// This class defines helper functions to do all the
+/// non-portable socket stuff. This class is meant for internal
+/// use only
 ////////////////////////////////////////////////////////////
-class SFML_API Music : public SoundStream
+class SFML_API SocketHelper
 {
 public :
 
     ////////////////////////////////////////////////////////////
-    /// Construct the music with a buffer size
-    ///
-    /// \param BufferSize : Size of the internal buffer, expressed in number of samples
-    ///                     (ie. size taken by the music in memory) (44100 by default)
-    ///
+    // Define some socket types
     ////////////////////////////////////////////////////////////
-    explicit Music(std::size_t BufferSize = 44100);
+    typedef SOCKET SocketType;
+    typedef int    LengthType;
 
     ////////////////////////////////////////////////////////////
-    /// Destructor
+    /// Return the value of the invalid socket
+    ///
+    /// \return Unique value of the invalid socket
     ///
     ////////////////////////////////////////////////////////////
-    ~Music();
+    static SocketType InvalidSocket();
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file (doesn't play it -- call Play() for that)
+    /// Close / destroy a socket
     ///
-    /// \param Filename : Path of the music file to open
+    /// \param Socket : Socket to close
     ///
-    /// \return True if loading has been successful
+    /// \return True on success
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromFile(const std::string& Filename);
+    static bool Close(SocketType Socket);
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file from memory (doesn't play it -- call Play() for that)
+    /// Set a socket as blocking or non-blocking
     ///
-    /// \param Data :        Pointer to the file data in memory
-    /// \param SizeInBytes : Size of the data to load, in bytes
-    ///
-    /// \return True if loading has been successful
+    /// \param Socket : Socket to modify
+    /// \param Block :  New blocking state of the socket
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromMemory(const char* Data, std::size_t SizeInBytes);
+    static void SetBlocking(SocketType Socket, bool Block);
 
     ////////////////////////////////////////////////////////////
-    /// Get the music duration
+    /// Get the last socket error status
     ///
-    /// \return Music duration, in seconds
-    ///
-    ////////////////////////////////////////////////////////////
-    float GetDuration() const;
-
-private :
-
-    ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnStart
+    /// \return Status corresponding to the last socket error
     ///
     ////////////////////////////////////////////////////////////
-    virtual bool OnStart();
-
-    ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnGetData
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual bool OnGetData(Chunk& Data);
-
-    ////////////////////////////////////////////////////////////
-    // Member data
-    ////////////////////////////////////////////////////////////
-    priv::SoundFile*   myFile;     ///< Sound file
-    float              myDuration; ///< Music duration, in seconds
-    std::vector<Int16> mySamples;  ///< Temporary buffer of samples
+    static Socket::Status GetErrorStatus();
 };
 
 } // namespace sf
 
 
-#endif // SFML_MUSIC_HPP
+#endif // SFML_SOCKETHELPERWIN32_HPP

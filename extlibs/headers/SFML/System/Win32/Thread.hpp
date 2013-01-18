@@ -22,99 +22,102 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_MUSIC_HPP
-#define SFML_MUSIC_HPP
+#ifndef SFML_THREADWIN32_HPP
+#define SFML_THREADWIN32_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Audio/SoundStream.hpp>
-#include <string>
-#include <vector>
+#include <SFML/System/NonCopyable.hpp>
+#include <windows.h>
 
 
 namespace sf
 {
-namespace priv
-{
-    class SoundFile;
-}
-
 ////////////////////////////////////////////////////////////
-/// Music defines a big sound played using streaming,
-/// so usually what we call a music :)
+/// Thread defines an easy way to manipulate a thread.
+/// There are two ways to use Thread :
+/// - Inherit from it and override the Run() virtual function
+/// - Construct a Thread instance and pass it a function
+/// pointer to call
 ////////////////////////////////////////////////////////////
-class SFML_API Music : public SoundStream
+class SFML_API Thread : NonCopyable
 {
 public :
 
-    ////////////////////////////////////////////////////////////
-    /// Construct the music with a buffer size
-    ///
-    /// \param BufferSize : Size of the internal buffer, expressed in number of samples
-    ///                     (ie. size taken by the music in memory) (44100 by default)
-    ///
-    ////////////////////////////////////////////////////////////
-    explicit Music(std::size_t BufferSize = 44100);
+    typedef void (*FuncType)(void*);
 
     ////////////////////////////////////////////////////////////
-    /// Destructor
+    /// Construct the thread from a function pointer
+    ///
+    /// \param Function : Entry point of the thread
+    /// \param UserData : Data to pass to the thread function (NULL by default)
     ///
     ////////////////////////////////////////////////////////////
-    ~Music();
+    Thread(FuncType Function, void* UserData = NULL);
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file (doesn't play it -- call Play() for that)
-    ///
-    /// \param Filename : Path of the music file to open
-    ///
-    /// \return True if loading has been successful
+    /// Virtual destructor
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromFile(const std::string& Filename);
+    virtual ~Thread();
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file from memory (doesn't play it -- call Play() for that)
-    ///
-    /// \param Data :        Pointer to the file data in memory
-    /// \param SizeInBytes : Size of the data to load, in bytes
-    ///
-    /// \return True if loading has been successful
+    /// Create and run the thread
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromMemory(const char* Data, std::size_t SizeInBytes);
+    void Launch();
 
     ////////////////////////////////////////////////////////////
-    /// Get the music duration
-    ///
-    /// \return Music duration, in seconds
+    /// Wait until the thread finishes
     ///
     ////////////////////////////////////////////////////////////
-    float GetDuration() const;
+    void Wait();
+
+    ////////////////////////////////////////////////////////////
+    /// Terminate the thread
+    /// Terminating a thread with this function is not safe,
+    /// you should rather try to make the thread function
+    /// terminate by itself
+    ///
+    ////////////////////////////////////////////////////////////
+    void Terminate();
+
+protected :
+
+    ////////////////////////////////////////////////////////////
+    /// Default constructor
+    ///
+    ////////////////////////////////////////////////////////////
+    Thread();
 
 private :
 
     ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnStart
+    /// Function called as the thread entry point
     ///
     ////////////////////////////////////////////////////////////
-    virtual bool OnStart();
+    virtual void Run();
 
     ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnGetData
+    /// Actual thread entry point, dispatches to instances
+    ///
+    /// \param UserData : Data to pass to the thread function
+    ///
+    /// \return Error code
     ///
     ////////////////////////////////////////////////////////////
-    virtual bool OnGetData(Chunk& Data);
+    static unsigned int __stdcall ThreadFunc(void* UserData);
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::SoundFile*   myFile;     ///< Sound file
-    float              myDuration; ///< Music duration, in seconds
-    std::vector<Int16> mySamples;  ///< Temporary buffer of samples
+    HANDLE   myHandle;   ///< Win32 thread handle
+    FuncType myFunction; ///< Function to call as the thread entry point
+    void*    myUserData; ///< Data to pass to the thread function
 };
 
 } // namespace sf
 
 
-#endif // SFML_MUSIC_HPP
+#endif // SFML_THREADWIN32_HPP

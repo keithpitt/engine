@@ -22,99 +22,63 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_MUSIC_HPP
-#define SFML_MUSIC_HPP
+#ifndef SFML_MUTEXWIN32_HPP
+#define SFML_MUTEXWIN32_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Audio/SoundStream.hpp>
-#include <string>
-#include <vector>
+#include <SFML/System/NonCopyable.hpp>
+#include <windows.h>
 
 
 namespace sf
 {
-namespace priv
-{
-    class SoundFile;
-}
-
 ////////////////////////////////////////////////////////////
-/// Music defines a big sound played using streaming,
-/// so usually what we call a music :)
+/// Mutex defines a mutex (MUTual EXclusion) object,
+/// that allows a thread to lock critical instructions
+/// to avoid simultaneous access with other threads.
+/// The Win32 version uses critical sections, as it is
+/// faster than mutexes.<br/>
+/// See Lock for an efficient way of using it.
 ////////////////////////////////////////////////////////////
-class SFML_API Music : public SoundStream
+class SFML_API Mutex : NonCopyable
 {
 public :
 
     ////////////////////////////////////////////////////////////
-    /// Construct the music with a buffer size
-    ///
-    /// \param BufferSize : Size of the internal buffer, expressed in number of samples
-    ///                     (ie. size taken by the music in memory) (44100 by default)
+    /// Default constructor
     ///
     ////////////////////////////////////////////////////////////
-    explicit Music(std::size_t BufferSize = 44100);
+    Mutex();
 
     ////////////////////////////////////////////////////////////
     /// Destructor
     ///
     ////////////////////////////////////////////////////////////
-    ~Music();
+    ~Mutex();
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file (doesn't play it -- call Play() for that)
-    ///
-    /// \param Filename : Path of the music file to open
-    ///
-    /// \return True if loading has been successful
+    /// Lock the mutex
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromFile(const std::string& Filename);
+    void Lock();
 
     ////////////////////////////////////////////////////////////
-    /// Open a music file from memory (doesn't play it -- call Play() for that)
-    ///
-    /// \param Data :        Pointer to the file data in memory
-    /// \param SizeInBytes : Size of the data to load, in bytes
-    ///
-    /// \return True if loading has been successful
+    /// Unlock the mutex
     ///
     ////////////////////////////////////////////////////////////
-    bool OpenFromMemory(const char* Data, std::size_t SizeInBytes);
-
-    ////////////////////////////////////////////////////////////
-    /// Get the music duration
-    ///
-    /// \return Music duration, in seconds
-    ///
-    ////////////////////////////////////////////////////////////
-    float GetDuration() const;
+    void Unlock();
 
 private :
 
     ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnStart
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual bool OnStart();
-
-    ////////////////////////////////////////////////////////////
-    /// /see SoundStream::OnGetData
-    ///
-    ////////////////////////////////////////////////////////////
-    virtual bool OnGetData(Chunk& Data);
-
-    ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    priv::SoundFile*   myFile;     ///< Sound file
-    float              myDuration; ///< Music duration, in seconds
-    std::vector<Int16> mySamples;  ///< Temporary buffer of samples
+    CRITICAL_SECTION myHandle; ///< Win32 handle of the mutex
 };
 
 } // namespace sf
 
 
-#endif // SFML_MUSIC_HPP
+#endif // SFML_MUTEXWIN32_HPP
