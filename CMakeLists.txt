@@ -82,8 +82,10 @@ if(APPLE)
 endif()
 
 if(WIN32)
-    set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    # Go over all the external libraries and include them in our application
+    foreach(LIB ${EXT_LIBS})
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${SDL_FOLDER}/VisualC/SDL/Release/SDL2.dll ${VS_OUTPUT_DIR}/SDL2.dll)
+        ${LIB} ${VS_OUTPUT_DIR})
+    endforeach()
 endif()
