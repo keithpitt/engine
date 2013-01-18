@@ -15,7 +15,7 @@ if(APPLE)
   set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
 
   # Framework files to be included
-  file(GLOB EXT_OPTIMIZED_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.framework")
+  file(GLOB EXT_OPTIMIZED_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.dylib")
 
   # On OS X we also have to add '-framework Cocoa' and IOKit as library.  This is
   # actually a bit of an hack but it's easy enough and reliable.
