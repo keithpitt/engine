@@ -20,7 +20,8 @@ NFI yet.
 ## Mac OSX
 
 cmake -D CMAKE_BUILD_TYPE=Debug -D BUILD_SHARED_LIBS=false .
-cmake -D CMAKE_BUILD_TYPE=Release -D SFML_BUILD_FRAMEWORKS=true .
+cmake -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=false .
+# cmake -D CMAKE_BUILD_TYPE=Release -D SFML_BUILD_FRAMEWORKS=true .
 
 ### Compiling SDL
 

@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 2.6)
+# I've only tested this on 2.8.9
+cmake_minimum_required(VERSION 2.8.9)
 
+# The application name
 project(Mandrill)
-
-# Include the SFML cmake file
 
 # A list of header and source files used by your application.
 set(SOURCES ...)
@@ -11,11 +11,14 @@ file(GLOB_RECURSE SOURCES "src2/*.cpp")
 set(HEADERS ...)
 file(GLOB_RECURSE HEADERS "src2/*.hpp")
 
+# Include FindSFML.cmake and friends
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{SFML_ROOT}/cmake/Modules")
+
+# Define what SFML components we want
+set(SFML_COMPONENTS system window graphics network audio)
+
 # Find SFML
-set(SFML_ROOT $ENV{SFML_ROOT})
-set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules")
-# set(SFML_STATIC_LIBRARIES TRUE)
-find_package(SFML 2 COMPONENTS system window graphics network audio REQUIRED)
+find_package(SFML 2 COMPONENTS ${SFML_COMPONENTS} REQUIRED)
 
 # we also need to find the system's OpenGL version
 find_package(OpenGL REQUIRED)
@@ -55,19 +58,30 @@ target_link_libraries(
   ${EXTRA_LIBS}
 )
 
+if(APPLE)
+  # Set the bundle path
+  set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/")
+  set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
+
+  # Make the framework folder (if it doesn't exist already)
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND test -d ${BUNDLE_FRAMEWORK_PATH} || mkdir -p ${BUNDLE_FRAMEWORK_PATH})
+
+  # Go over all the SFML_COMPONENTS and add them to the final bundle
+  foreach(COMPONENT ${SFML_COMPONENTS})
+    # Construct the framework lib release variable
+    string(TOUPPER ${COMPONENT} COMPONENT_UPPER)
+    set(SFML_FRAMEWORK ${SFML_${COMPONENT_UPPER}_LIBRARY_RELEASE})
+
+    # Copy it to the bundle
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      COMMAND cp -r ${SFML_FRAMEWORK} ${BUNDLE_FRAMEWORK_PATH})
+  endforeach()
+endif()
+
 if(WIN32)
     set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${SDL_FOLDER}/VisualC/SDL/Release/SDL2.dll ${VS_OUTPUT_DIR}/SDL2.dll)
-endif()
-if(APPLE)
-  # Find the Frameworks directrory
-  set(FRAMEWORK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Frameworks)
-
-  message(${SFML_ROOT}/lib/*.framework)
-
-  # Copy all the built frameworks from SFML into the bundle
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND mkdir -p ${FRAMEWORK_DIR} && cp -r ${SFML_ROOT}/lib/*.framework ${FRAMEWORK_DIR})
 endif()
