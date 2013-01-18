@@ -6,14 +6,18 @@ project(Mandrill)
 
 # Include out external dependencies
 set(EXT_LIBS ...)
-set(SYSTEM_LIBS "")
+set(SYSTEM_LIBS ...)
 
 if(APPLE)
-  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/Frameworks/*.framework")
+  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.framework")
 
   # On OS X we also have to add '-framework Cocoa' and IOKit as library.  This is
   # actually a bit of an hack but it's easy enough and reliable.
   set(SYSTEM_LIBS ${SYSTEM_LIBS} "-framework Cocoa -framework IOKit")
+endif()
+
+if(WIN32)
+  file(GLOB EXT_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-libs-msvc/*.dll")
 endif()
 
 # We also need to find the system's OpenGL version
@@ -82,10 +86,10 @@ if(APPLE)
 endif()
 
 if(WIN32)
-    # Go over all the external libraries and include them in our application
-    foreach(LIB ${EXT_LIBS})
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${LIB} ${VS_OUTPUT_DIR})
-    endforeach()
+  # Go over all the external libraries and include them in our application
+  #foreach(LIB ${EXT_LIBS})
+    #add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      #COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      #${LIB} ${VS_OUTPUT_DIR})
+  #endforeach()
 endif()
