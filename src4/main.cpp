@@ -30,7 +30,7 @@ int main(void)
     monitor = glfwGetPrimaryMonitor();
 
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow(1024, 768, "Spinning Triangle", monitor, NULL);
+    window = glfwCreateWindow(1440, 900, "Spinning Triangle", monitor, NULL);
     if (!window)
     {
         glfwTerminate();
