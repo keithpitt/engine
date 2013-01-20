@@ -95,6 +95,9 @@ if(APPLE)
 endif()
 
 if(WIN32)
+  # Tell MSVC to use main instead of WinMain for Windows subsystem executables
+  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+
   # Ship the DLL's with the package. I know we're not doing release/debug testing.
   # But I have no idea how to do it...
   foreach(DLL ${EXT_OPTIMIZED_DLLS})
