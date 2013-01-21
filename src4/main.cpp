@@ -9,7 +9,9 @@
 
 #define GLFW_DLL
 #define GLFW_INCLUDE_GLU
+#include <GL/glew.h>
 #include <GL/glfw3.h>
+#include <glm/glm.hpp>
 
 static void error_callback(int error, const char* description)
 {

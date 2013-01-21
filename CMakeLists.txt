@@ -27,13 +27,20 @@ if(WIN32)
   set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
   set(EXT_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-msvc")
 
-  # Optimized dependencies for linking and shipping
-  file(GLOB EXT_OPTIMIZED_LIBS "${EXT_LIB_PATH}/release/*.lib")
-  file(GLOB EXT_OPTIMIZED_DLLS "${EXT_LIB_PATH}/release/*.dll")
+  # Have we got seperated debug/release directories?
+  if(IS_DIRECTORY "${EXT_LIB_PATH}/release")
+    # Optimized dependencies for linking and shipping
+    file(GLOB EXT_OPTIMIZED_LIBS "${EXT_LIB_PATH}/release/*.lib")
+    file(GLOB EXT_OPTIMIZED_DLLS "${EXT_LIB_PATH}/release/*.dll")
 
-  # Debugging dependencies for linking and shipping
-  file(GLOB EXT_DEBUG_LIBS "${EXT_LIB_PATH}/debug/*.lib")
-  file(GLOB EXT_DEBUG_DLLS "${EXT_LIB_PATH}/debug/*.dll")
+    # Debugging dependencies for linking and shipping
+    file(GLOB EXT_DEBUG_LIBS "${EXT_LIB_PATH}/debug/*.lib")
+    file(GLOB EXT_DEBUG_DLLS "${EXT_LIB_PATH}/debug/*.dll")
+  else()
+    # We have no release/debug folders. They're all the same!
+    file(GLOB EXT_OPTIMIZED_LIBS "${EXT_LIB_PATH}/*.lib")
+    file(GLOB EXT_OPTIMIZED_DLLS "${EXT_LIB_PATH}/*.dll")
+  endif()
 endif()
 
 # Include our extlibs headers.
