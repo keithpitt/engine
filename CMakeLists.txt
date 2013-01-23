@@ -8,11 +8,21 @@ project(Mandrill)
 find_package(OpenGL REQUIRED)
 set(SYSTEM_LIBS ${SYSTEM_LIBS} ${OPENGL_LIBRARIES})
 
+# Find our resources
+set(PROJECT_RESOURCES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+file(GLOB_RECURSE PROJECT_RESOURCES "${PROJECT_RESOURCES_PATH}/*.*")
+
 # Include out external dependencies
 if(APPLE)
   # Set the bundle path
-  set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app")
+  if(XCODE)
+    set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/\${CONFIGURATION}/${PROJECT_NAME}.app")
+  else()
+    set(BUNDLE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app")
+  endif()
+
   set(BUNDLE_FRAMEWORK_PATH "${BUNDLE_PATH}/Contents/Frameworks")
+  set(OUTPUT_RESOURCES_PATH "${BUNDLE_PATH}/Contents/Resources")
 
   # Framework files to be included
   file(GLOB EXT_OPTIMIZED_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-osx/*.dylib")
@@ -24,8 +34,9 @@ endif()
 
 if(WIN32)
   # Define the output directory
-  set(VS_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
+  set(VS_OUTPUT_DIR $<TARGET_FILE_DIR:${PROJECT_NAME}>)
   set(EXT_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/libs-msvc")
+  set(OUTPUT_RESOURCES_PATH ${VS_OUTPUT_DIR})
 
   # Have we got seperated debug/release directories?
   if(IS_DIRECTORY "${EXT_LIB_PATH}/release")
@@ -61,6 +72,7 @@ add_executable(
   ${SOURCES}
   ${HEADERS}
   ${EXT_OPTIMIZED_LIBS} # This is here so we can set source_file_properties on it for Xcode
+  ${PROJECT_RESOURCES} # Just so we can see our resources in IDE's
 )
 
 # Link the system libraries to the target
@@ -115,3 +127,22 @@ if(WIN32)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${DLL} $<TARGET_FILE_DIR:${PROJECT_NAME}>/${DLL_NAME})
   endforeach()
 endif()
+
+# Copy all the resources to the build directory
+foreach(RESOURCE_PATH ${PROJECT_RESOURCES})
+  # Replace the root location of the resource with its local location, i.e.
+  # /Users/keith/development/etc... becomes /assets/sprite /assets/sprite.png
+  string(REPLACE "${PROJECT_RESOURCES_PATH}" "" RESOURCE_LOCAL_PATH ${RESOURCE_PATH})
+  get_filename_component(RESOURCE_LOCAL_FOLDER ${RESOURCE_LOCAL_PATH} PATH)
+
+  # The finalized resource folder inside the resulting application
+  set(RESOURCE_DESTINATION ${OUTPUT_RESOURCES_PATH}${RESOURCE_LOCAL_FOLDER})
+
+  # Make folders for the resources
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND mkdir -p ${RESOURCE_DESTINATION})
+
+  # Copy the file to its new location
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_PATH} ${RESOURCE_DESTINATION})
+endforeach()
