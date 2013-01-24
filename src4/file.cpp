@@ -33,12 +33,6 @@ const char* kp::File::wd() {
     return getwd(NULL);
 }
 
-const char* kp::File::normalize() {
-    // Ensure that the first char is a delim, and the last char is not.
-    
-    return NULL;
-};
-
 const char* kp::File::path() {
     return join(wd(), filename);
 }

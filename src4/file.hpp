@@ -15,7 +15,6 @@ namespace kp {
         
         File(const char* filename);
         
-        const char* normalize();
         const char* path();
         const char* read();
         
