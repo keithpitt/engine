@@ -1,7 +1,8 @@
 #include "string.hpp"
 
 #include <stdio.h>
-#include <vector.h>
+#include <vector>
+#include <string>
 
 std::string vformat (const char *fmt, va_list ap)
 {
