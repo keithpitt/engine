@@ -9,11 +9,13 @@ namespace kp {
         
         static const char* read(const char* filename);
         static const char* join(const char* start, const char* end);
+        static const char* wd();
         
         const char* filename;
         
         File(const char* filename);
         
+        const char* normalize();
         const char* path();
         const char* read();
         

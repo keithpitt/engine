@@ -5,12 +5,15 @@
 
 namespace kp {
     
+    class File;
+    
     class Shader {
     public:
         
         const char* source;
         GLenum type;
         
+        Shader(File file, GLenum shaderType);
         Shader(const char* source, GLenum shaderType);
         
         void compile();

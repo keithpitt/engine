@@ -1,5 +1,11 @@
 #include "shader.hpp"
 #include "debug.hpp"
+#include "file.hpp"
+
+kp::Shader::Shader(File file, GLenum shaderType) {
+    this->source = file.read();
+    this->type = shaderType;
+};
 
 kp::Shader::Shader(const char* source, GLenum shaderType) {
     this->source = source;

@@ -3,6 +3,7 @@
 
 namespace kp {
     
+    void debug(const char* message, ...);
     void error(const char* message, ...);
 
 }

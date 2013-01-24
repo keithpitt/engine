@@ -61,10 +61,10 @@ int main(void)
     }
 
     // print out some info about the graphics drivers
-    printf("OpenGL version: %s\n", glGetString(GL_VERSION));
-    printf("GLSL version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    printf("Vendor: %s\n", glGetString(GL_VENDOR));
-    printf("Renderer: %s\n", glGetString(GL_RENDERER));
+    kp::debug("OpenGL version: %s", glGetString(GL_VERSION));
+    kp::debug("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    kp::debug("Vendor: %s", glGetString(GL_VENDOR));
+    kp::debug("Renderer: %s", glGetString(GL_RENDERER));
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -88,11 +88,7 @@ int main(void)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    const char* contents = kp::File("shaders/vertex_shader.glsl").read();
-    
-    printf("File: %s", contents);
-    
-    kp::Shader * shader = new kp::Shader(contents, GL_VERTEX_SHADER);
+    kp::Shader * shader = new kp::Shader(kp::File("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
     
     delete shader;
 
