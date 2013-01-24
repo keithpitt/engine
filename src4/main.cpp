@@ -16,126 +16,14 @@
 #include <glm/glm.hpp>
 
 // For the file class
-#include <stdio.h>
-#include <fstream>
-#include <string>
-#include <cerrno>
-
-
-#include <string>
-#include <iostream>
-#include <stdio.h>
-
-std::string cmd(char* cmd) {
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "ERROR";
-    char buffer[128];
-    std::string result = "";
-    while(!feof(pipe)) {
-    	if(fgets(buffer, 128, pipe) != NULL)
-    		result += buffer;
-    }
-    pclose(pipe);
-    return result;
-}
-
-namespace kp {
-
-    class File {
-        
-    public:
-        
-        static const char* read(const char* filename) {
-            // Create the file object and load the file
-            File* file = new File(filename);
-            const char* contents = file->read();
-            
-            // Free the file memory
-            delete file;
-            
-            return contents;
-        };
-        
-        const char* filename;
-        
-        File(const char* filename) {
-            this->filename = filename;
-        }
-        
-        const char* read() {
-            std::ifstream in(filename, std::ios::in | std::ios::binary);
-            
-            if (in) {
-                std::string contents;
-                
-                // Find out the size of the file
-                in.seekg(0, std::ios::end);
-                contents.resize(in.tellg());
-                in.seekg(0, std::ios::beg);
-                
-                // Read in the data
-                in.read(&contents[0], contents.size());
-                
-                // Close it again
-                in.close();
-                
-                return contents.c_str();
-            };
-            
-            throw(errno);
-        };
-        
-    };
-
-    class Shader {
-    public:
-        
-        const char* source;
-        GLenum type;
-        
-        Shader(const char* source, GLenum shaderType) {
-            this->source = source;
-            this->type = shaderType;
-            
-            // Compile the shader
-            compile();
-        };
-        
-        void compile() {
-            // Create a shader of the type specified
-            GLuint shader = glCreateShader(type);
-            if(shader == 0)
-                throw std::runtime_error("glCreateShader failed");
-            
-            // Send our shader source into the shader.
-            glShaderSource(shader, 1, (const GLchar**)&source, NULL);
-            
-            // Actaully compile the shader now.
-            glCompileShader(shader);
-            
-            // Find the status of the compilation
-            GLint status;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-            
-            if(status != GL_TRUE) {
-                // Grab the shader log
-                char buffer[1024];
-                glGetShaderInfoLog(shader, sizeof(buffer), NULL, buffer);
-                
-                // Output and exit
-                printf("Error:  Failed to compile buffer:\n%s", buffer);
-                
-                exit(EXIT_FAILURE);
-            }
-        }
-        
-    };
-    
-}
+#include "string.hpp"
+#include "file.hpp"
+#include "debug.hpp"
+#include "shader.hpp"
 
 static void error_callback(int error, const char* description)
 {
-    fprintf(stderr, "Error: %s\n", description);
+    kp::error(description);
 }
 
 int main(void)
@@ -156,7 +44,7 @@ int main(void)
     // Open a window and create its OpenGL context
     window = glfwCreateWindow(800, 600, "Mandrill", NULL, NULL);
     if (!window) {
-        throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+        kp::error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
     
     // Create an OpenGL context on the window we've just created
@@ -169,8 +57,7 @@ int main(void)
     glewExperimental = GL_TRUE; //stops glew crashing on OSX :-/
     GLenum err = glewInit();
     if(err != GLEW_OK) {
-        printf("glewInit failed: %s\n", glewGetErrorString(err));
-        exit(EXIT_FAILURE);
+        kp::error("glewInit failed: %s\n", glewGetErrorString(err));
     }
 
     // print out some info about the graphics drivers
@@ -201,7 +88,9 @@ int main(void)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    const char* contents = kp::File::read("shaders/vertex_shader.glsl");
+    const char* contents = kp::File("shaders/vertex_shader.glsl").read();
+    
+    printf("File: %s", contents);
     
     kp::Shader * shader = new kp::Shader(contents, GL_VERTEX_SHADER);
     
