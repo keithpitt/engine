@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-const char* kp::File::join(const char* start, const char* end) {
+const char* kp::File::join(const char start[], const char end[]) {
     // This delim should change depending on OS
     const char delim = '/';
     char seperator = NULL;

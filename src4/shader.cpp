@@ -3,8 +3,9 @@
 #include "file.hpp"
 
 kp::Shader::Shader(File file, GLenum shaderType) {
-    this->source = file.read();
-    this->type = shaderType;
+    // Forward the file contents and the shader type to the other
+    // constructor
+    Shader(file.read(), shaderType);
 };
 
 kp::Shader::Shader(const char* source, GLenum shaderType) {

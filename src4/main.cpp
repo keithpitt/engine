@@ -92,7 +92,7 @@ int main(void)
     
     delete shader;
 
-    for (;;)
+    while(1)
     {
         // Clear color buffer to black
         glClearColor(0.f, 0.f, 0.f, 0.f);

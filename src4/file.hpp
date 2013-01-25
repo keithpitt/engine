@@ -7,8 +7,8 @@ namespace kp {
         
     public:
         
-        static const char* read(const char* filename);
-        static const char* join(const char* start, const char* end);
+        static const char* read(const char filename[]);
+        static const char* join(const char start[], const char end[]);
         static const char* wd();
         
         const char* filename;
