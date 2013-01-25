@@ -16,9 +16,14 @@ kp::Shader::Shader(const char* source, GLenum shaderType) {
     compile();
 };
 
+kp::Shader::~Shader() {
+    // Free the shader
+    glDeleteShader(shader);
+}
+
 void kp::Shader::compile() {
     // Create a shader of the type specified
-    GLuint shader = glCreateShader(type);
+    shader = glCreateShader(type);
     if(shader == 0)
         kp::error("glCreateShader failed");
     

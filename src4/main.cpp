@@ -88,9 +88,11 @@ int main(void)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    kp::Shader * shader = new kp::Shader(kp::File("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
+    kp::Shader* vertextShader = new kp::Shader(kp::File("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
+    kp::Shader* fragmentShader = new kp::Shader(kp::File("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
     
-    delete shader;
+    delete vertextShader;
+    delete fragmentShader;
 
     while(1)
     {

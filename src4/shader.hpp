@@ -12,9 +12,12 @@ namespace kp {
         
         const char* source;
         GLenum type;
+        GLuint shader;
         
         Shader(File file, GLenum shaderType);
         Shader(const char* source, GLenum shaderType);
+        
+        ~Shader();
         
         void compile();
         
