@@ -8,11 +8,12 @@
 #include <stdlib.h>
 #include <stdexcept>
 
-#define GLFW_DLL
-#define GLFW_INCLUDE_GLU
 #include <GL/glew.h>
 
+#define GLFW_DLL
+#define GLFW_INCLUDE_GLU
 #include <GL/glfw3.h>
+
 #include <glm/glm.hpp>
 
 // For the file class
@@ -20,6 +21,7 @@
 #include "file.hpp"
 #include "debug.hpp"
 #include "shader.hpp"
+#include "gl.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -42,7 +44,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow(800, 600, "Mandrill", NULL, NULL);
+    window = glfwCreateWindow(1024, 768, "Mandrill", NULL, NULL);
     if (!window) {
         kp::error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
@@ -69,6 +71,13 @@ int main(void)
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     
+    GLuint vao;
+    glGenVertexArraysAPPLE(1, &vao);
+    kp::gl::error("glGenVertexArrays", glGetError());
+    
+    glBindVertexArrayAPPLE(vao);
+    kp::gl::error("glBindVertexArray", glGetError());
+    
     // Define the vertices for our triangle
     float vertices[] = {
         0.0f,  0.5f,
@@ -90,15 +99,29 @@ int main(void)
     
     kp::Shader* vertextShader = new kp::Shader(kp::File("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
     kp::Shader* fragmentShader = new kp::Shader(kp::File("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
+
+    GLuint shaderProgram = glCreateProgram();
     
-    delete vertextShader;
-    delete fragmentShader;
+    glAttachShader(shaderProgram, vertextShader->shader);
+    
+    glAttachShader(shaderProgram, fragmentShader->shader);
+    
+    glLinkProgram(shaderProgram);
+    glUseProgram(shaderProgram);
+    
+    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glEnableVertexAttribArray(posAttrib);
 
     while(1)
     {
         // Clear color buffer to black
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        glDrawArrays( GL_TRIANGLES, 0, 3 );
 
         // Swap buffers
         glfwSwapBuffers(window);
@@ -113,6 +136,9 @@ int main(void)
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
+    
+    delete vertextShader;
+    delete fragmentShader;
 
     exit(EXIT_SUCCESS);
 }
