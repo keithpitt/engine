@@ -72,10 +72,10 @@ int main(void)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     
     GLuint vao;
-    glGenVertexArraysAPPLE(1, &vao);
+    glGenVertexArrays(1, &vao);
     kp::gl::error("glGenVertexArrays", glGetError());
     
-    glBindVertexArrayAPPLE(vao);
+    glBindVertexArray(vao);
     kp::gl::error("glBindVertexArray", glGetError());
     
     // Define the vertices for our triangle
