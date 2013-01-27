@@ -1,6 +1,7 @@
 #include "file.hpp"
 #include "string.hpp"
 #include "debug.hpp"
+#include <physfs/physfs.h>
 
 #include <iostream>
 #include <fstream>
