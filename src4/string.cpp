@@ -35,7 +35,7 @@ std::string vformat (const char *fmt, va_list ap)
     }
 }
 
-const char* kp::String::format(char* format, ...) {
+const char* kp::String::format(const char* format, ...) {
     va_list args;
     va_start(args, format);
     std::string formatted = vformat(format, args);

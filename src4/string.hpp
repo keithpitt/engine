@@ -7,7 +7,7 @@ namespace kp {
         
     public:
         
-        static const char* format(char* format, ...);
+        static const char* format(const char* format, ...);
         
     };
     

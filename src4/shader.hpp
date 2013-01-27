@@ -14,7 +14,6 @@ namespace kp {
         GLenum type;
         GLuint shader;
         
-        Shader(File file, GLenum shaderType);
         Shader(const char* source, GLenum shaderType);
         
         ~Shader();

@@ -1,63 +1,60 @@
 #include "file.hpp"
 #include "string.hpp"
 #include "debug.hpp"
+
+#include <stdio.h>
+#include <string>
 #include <physfs/physfs.h>
 
-#include <iostream>
-#include <fstream>
+void kp::file::init(const char* argv0)
+{
+    if(PHYSFS_init(argv0) == 0)
+    {
+        kp::error("PHYSFS_init: %s", PHYSFS_getLastError());
+    }
 
-const char* kp::File::join(const char start[], const char end[]) {
-    // This delim should change depending on OS
-    const char delim = '/';
-    char seperator = NULL;
-    
-    // Ensure the last character of the start is a delim
-    const char last = (char)start[strlen(start)];
-    if(last != delim) {
-        seperator = delim;
+#ifdef __APPLE__
+    // Append the resources directory to the search paths if we're on an
+    // OSX.
+    const char* directory = kp::String::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources");
+
+    if(PHYSFS_mount(directory, NULL, 1) == 0)
+    {
+        kp::error("PHYSFS_mount(%c): %s", directory, PHYSFS_getLastError());
     }
-    
-    // If there is a delim at the begining of the end, remove it
-    const char first = (char)end[0];
-    if(first == delim) {
-        end++; // Skip to the next item in the array
-    }
-    
-    return kp::String::format((char*)"%s%c%s", start, seperator, end);
+#endif
 };
 
-kp::File::File(const char* filename) {
-    this->filename = filename;
-}
-
-const char* kp::File::wd() {
-    return getwd(NULL);
-}
-
-const char* kp::File::path() {
-    return join(wd(), filename);
-}
-
-const char* kp::File::read() {
-    const char* location = path();
-    std::ifstream file(location);
-    
-    if(file) {
-        std::string contents;
-        std::string line;
-        
-        while (file.good()) {
-            getline(file, line);
-            
-            // Append the line and a new line escape char to the string
-            contents.append(line);
-            contents.append("\n");
-        }
-        
-        return contents.c_str();
-    } else {
-        kp::error("Failed to open %s", location);
+void kp::file::cleanup()
+{
+    if(PHYSFS_deinit() == 0)
+    {
+        kp::error("PHYSFS_deinit: %s", PHYSFS_getLastError());
     }
-    
-    return NULL;
-};
+}
+
+const char* kp::file::read(const char filename[])
+{
+    PHYSFS_File* handle = PHYSFS_openRead(filename);
+
+    if(handle == NULL)
+    {
+        kp::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
+    }
+
+    // Create a buffer big enough for the file
+    PHYSFS_sint64 size = PHYSFS_fileLength(handle);
+    char buffer[size];
+
+    // Read the bytes
+    if(PHYSFS_readBytes(handle, buffer, size) != size) {
+        kp::error("PHYSFS_readBytes(%s): %s", filename, PHYSFS_getLastError());
+    }
+
+    // Close the file handle
+    PHYSFS_close(handle);
+
+    std::string result = std::string(buffer, (size_t) size);
+
+    return result.c_str();
+}

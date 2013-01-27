@@ -28,7 +28,7 @@ static void error_callback(int error, const char* description)
     kp::error(description);
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
     GLFWwindow* window;
 
@@ -38,6 +38,9 @@ int main(void)
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
     }
+
+    // Initialize the file system reader
+    kp::file::init(argv[0]);
 
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -97,8 +100,8 @@ int main(void)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    kp::Shader* vertextShader = new kp::Shader(kp::File("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
-    kp::Shader* fragmentShader = new kp::Shader(kp::File("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
+    kp::Shader* vertextShader = new kp::Shader(kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
+    kp::Shader* fragmentShader = new kp::Shader(kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
 
     GLuint shaderProgram = glCreateProgram();
     
@@ -136,7 +139,10 @@ int main(void)
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
-    
+
+    // Cleanup our file handlers
+    kp::file::cleanup();
+
     delete vertextShader;
     delete fragmentShader;
 
