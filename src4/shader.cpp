@@ -55,7 +55,6 @@ void kp::Shader::compile() {
         char buffer[1024];
         glGetShaderInfoLog(shader, sizeof(buffer), NULL, buffer);
         
-		kp::debug(source);
         kp::error("Failed to compile buffer:\n%s", buffer);
     }
 }

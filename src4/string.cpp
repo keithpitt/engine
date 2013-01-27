@@ -4,14 +4,6 @@
 #include <vector>
 #include <string>
 
-#ifdef _WIN32
-#include <stdarg.h>
-int average( int first, ... );
-#else
-#include <varargs.h>
-int average( va_list );
-#endif
-
 std::string vformat (const char *fmt, va_list ap)
 {
     // Allocate a buffer on the stack that's big enough for us almost
@@ -23,7 +15,7 @@ std::string vformat (const char *fmt, va_list ap)
     
     while (1) {
         // Try to vsnprintf into our buffer.
-        int needed = vsnprintf(buf, size, fmt, ap);
+        int needed = vsnprintf (buf, size, fmt, ap);
         // NB. C99 (which modern Linux and OS X follow) says vsnprintf
         // failure returns the length it would have needed.  But older
         // glibc and current Windows return -1 for failure, i.e., not

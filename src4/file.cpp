@@ -2,24 +2,12 @@
 #include "string.hpp"
 #include "debug.hpp"
 
-#include <string>
 #include <iostream>
 #include <fstream>
 
-#if _WIN32
-#include <windows.h>
-#include <tchar.h>
-#define BUFSIZE MAX_PATH
-#endif
-
 const char* kp::File::join(const char start[], const char end[]) {
     // This delim should change depending on OS
-#ifdef _WIN32
-    const char delim = '\\';
-#else
     const char delim = '/';
-#endif
-
     char seperator = NULL;
     
     // Ensure the last character of the start is a delim
@@ -42,14 +30,7 @@ kp::File::File(const char* filename) {
 }
 
 const char* kp::File::wd() {
-#if _WIN32
-	TCHAR directory[BUFSIZE];
-	GetCurrentDirectory(BUFSIZE, directory);
-
-	return "Z:\Development\mandrill\vs\Debug";
-#else
     return getwd(NULL);
-#endif
 }
 
 const char* kp::File::path() {
@@ -58,14 +39,14 @@ const char* kp::File::path() {
 
 const char* kp::File::read() {
     const char* location = path();
-    std::ifstream file(filename);
+    std::ifstream file(location);
     
     if(file) {
         std::string contents;
         std::string line;
         
         while (file.good()) {
-			std::getline(file, line);
+            getline(file, line);
             
             // Append the line and a new line escape char to the string
             contents.append(line);
@@ -74,7 +55,7 @@ const char* kp::File::read() {
         
         return contents.c_str();
     } else {
-        kp::error("Failed to open %s", filename);
+        kp::error("Failed to open %s", location);
     }
     
     return NULL;
