@@ -35,11 +35,11 @@ std::string vformat (const char *fmt, va_list ap)
     }
 }
 
-const char* kp::String::format(const char* format, ...) {
+const char* kp::string::format(const char* format, ...) {
     va_list args;
     va_start(args, format);
     std::string formatted = vformat(format, args);
     va_end(args);
-    
+
     return formatted.c_str();
 };

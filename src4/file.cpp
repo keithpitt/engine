@@ -16,7 +16,7 @@ void kp::file::init(const char* argv0)
 #ifdef __APPLE__
     // Append the resources directory to the search paths if we're on an
     // OSX.
-    const char* directory = kp::String::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources");
+    const char* directory = kp::string::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources");
 
     if(PHYSFS_mount(directory, NULL, 1) == 0)
     {
