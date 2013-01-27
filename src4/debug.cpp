@@ -13,7 +13,7 @@ void kp::debug(const char* message, ...) {
     
     fprintf(stdout, "Debug: ");
     vfprintf(stdout, message, args);
-    fprintf(stdout, "\n");
+    //fprintf(stdout, "/\n");
     
     // need to call this because we used va_start
     va_end(args);
