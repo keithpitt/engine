@@ -140,7 +140,7 @@ foreach(RESOURCE_PATH ${PROJECT_RESOURCES})
 
   # Make folders for the resources
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND mkdir -p ${RESOURCE_DESTINATION})
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${RESOURCE_DESTINATION})
 
   # Copy the file to its new location
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
