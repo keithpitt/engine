@@ -25,7 +25,7 @@ void kp::debug::info(const char* message, ...)
     va_list args;
     va_start(args, message);
 
-    output(stdout, "Debug", message, args);
+    output(stdout, "Info", message, args);
 
     va_end(args);
 }
