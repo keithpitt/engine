@@ -4,6 +4,10 @@
 #include <vector>
 #include <string>
 
+#ifdef _WIN32
+#include <stdarg.h>
+#endif
+
 std::string vformat (const char *fmt, va_list ap)
 {
     // Allocate a buffer on the stack that's big enough for us almost

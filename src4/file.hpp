@@ -8,7 +8,7 @@ namespace kp {
         void init(const char* argv0);
         void cleanup();
 
-        const char* read(const char filename[]);
+        const char* read(const char* filename);
 
     }
 

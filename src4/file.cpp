@@ -14,15 +14,17 @@ void kp::file::init(const char* argv0)
     }
 
 #ifdef __APPLE__
-    // Append the resources directory to the search paths if we're on an
-    // OSX.
     const char* directory = kp::string::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources");
+#endif
+
+#ifdef _WIN32
+    const char* directory = PHYSFS_getBaseDir();
+#endif
 
     if(PHYSFS_mount(directory, NULL, 1) == 0)
     {
         kp::error("PHYSFS_mount(%c): %s", directory, PHYSFS_getLastError());
     }
-#endif
 };
 
 void kp::file::cleanup()
@@ -33,7 +35,7 @@ void kp::file::cleanup()
     }
 }
 
-const char* kp::file::read(const char filename[])
+const char* kp::file::read(const char* filename)
 {
     PHYSFS_File* handle = PHYSFS_openRead(filename);
 
@@ -44,17 +46,21 @@ const char* kp::file::read(const char filename[])
 
     // Create a buffer big enough for the file
     PHYSFS_sint64 size = PHYSFS_fileLength(handle);
-    char buffer[size];
+
+    // Append an extra byte to the string so we can null terminate it
+    char* buffer = new char[size+1];
 
     // Read the bytes
-    if(PHYSFS_readBytes(handle, buffer, size) != size) {
-        kp::error("PHYSFS_readBytes(%s): %s", filename, PHYSFS_getLastError());
+    if(PHYSFS_readBytes(handle, buffer, size) != size)
+    {
+        kp::error("PHYSFS_read: %s", PHYSFS_getLastError());
     }
+
+    // Null terminate the buffer
+    buffer[size] = '\0';
 
     // Close the file handle
     PHYSFS_close(handle);
 
-    std::string result = std::string(buffer, (size_t) size);
-
-    return result.c_str();
+    return buffer;
 }
