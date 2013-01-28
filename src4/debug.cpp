@@ -4,33 +4,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void kp::debug(const char* message, ...) {
-    va_list args;
-    
-    // `args` is the variable to load the arguments into. the second parameter
-    // is the parameter name of the first variable before the ... begins.
-    va_start(args, message);
-    
-    fprintf(stdout, "Debug: ");
+void output(FILE * stream, const char* prefix, const char* message, va_list args)
+{
+    fprintf(stdout, "%s: ", prefix);
     vfprintf(stdout, message, args);
     fprintf(stdout, "\n");
+};
+
+void kp::debug::info(const char* message, ...)
+{
+    va_list args;
+    va_start(args, message);
     
-    // need to call this because we used va_start
+    output(stdout, "Debug", message, args);
+    
     va_end(args);
 }
 
-void kp::error(const char* message, ...) {
+void kp::debug::error(const char* message, ...)
+{
     va_list args;
-    
-    // `args` is the variable to load the arguments into. the second parameter
-    // is the parameter name of the first variable before the ... begins.
     va_start(args, message);
     
-    fprintf(stderr, "Error: ");
-    vfprintf(stderr, message, args);
-    fprintf(stderr, "\n");
+    output(stderr, "Error", message, args);
+    va_end(args);
+}
+
+void kp::debug::fatal(const char* message, ...)
+{
+    va_list args;
+    va_start(args, message);
     
-    // need to call this because we used va_start
+    output(stdout, "Fatal", message, args);
+    
     va_end(args);
     
     exit(EXIT_FAILURE);

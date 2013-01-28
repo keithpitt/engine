@@ -11,7 +11,7 @@ kp::Shader::Shader(const char* source, GLenum shaderType) {
 };
 
 kp::Shader::~Shader() {
-    kp::debug("Freeing shader: %i",shader);
+    kp::debug::info("Freeing shader: %i",shader);
     
     // Free the shader
     glDeleteShader(shader);
@@ -21,21 +21,21 @@ void kp::Shader::compile() {
     // Create a shader of the type specified
     shader = glCreateShader(type);
     
-    kp::debug("I created a shader, its value is: %i", this->shader);
+    kp::debug::info("I created a shader, its value is: %i", this->shader);
     
     if(shader == 0)
-        kp::error("glCreateShader failed");
+        kp::debug::error("glCreateShader failed");
     
     // Send our shader source into the shader.
     glShaderSource(shader, 1, (const GLchar**)&source, NULL);
     
-    kp::debug("I created a shader, its value is: %i", this->shader);
+    kp::debug::info("I created a shader, its value is: %i", this->shader);
     
     // Actaully compile the shader now.
     glCompileShader(shader);
     kp::gl::error("glCompileShader", glGetError());
     
-    kp::debug("I created a shader, its value is: %i", this->shader);
+    kp::debug::info("I created a shader, its value is: %i", this->shader);
     
     // Find the status of the compilation
     GLint status;
@@ -46,6 +46,6 @@ void kp::Shader::compile() {
         char buffer[1024];
         glGetShaderInfoLog(shader, sizeof(buffer), NULL, buffer);
         
-        kp::error("Failed to compile buffer:\n%s", buffer);
+        kp::debug::error("Failed to compile buffer:\n%s", buffer);
     }
 }

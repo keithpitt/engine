@@ -3,8 +3,13 @@
 
 namespace kp {
     
-    void debug(const char* message, ...);
-    void error(const char* message, ...);
+    namespace debug {
+    
+        void info(const char* message, ...);
+        void error(const char* message, ...);
+        void fatal(const char* message, ...);
+        
+    };
 
 }
 

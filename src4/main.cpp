@@ -25,7 +25,7 @@
 
 static void error_callback(int error, const char* description)
 {
-    kp::error(description);
+    kp::debug::fatal(description);
 }
 
 int main(int argc, char** argv)
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 
     // Initialise GLFW
     if (!glfwInit()) {
-        exit(EXIT_FAILURE);
+        kp::debug::fatal("glfwInit failed");
     }
 
     // Initialize the file system reader
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     // Open a window and create its OpenGL context
     window = glfwCreateWindow(1024, 768, "Mandrill", NULL, NULL);
     if (!window) {
-        kp::error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+        kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
     
     // Create an OpenGL context on the window we've just created
@@ -62,14 +62,14 @@ int main(int argc, char** argv)
     glewExperimental = GL_TRUE; //stops glew crashing on OSX :-/
     GLenum err = glewInit();
     if(err != GLEW_OK) {
-        kp::error("glewInit failed: %s\n", glewGetErrorString(err));
+        kp::debug::fatal("glewInit failed: %s\n", glewGetErrorString(err));
     }
 
     // print out some info about the graphics drivers
-    kp::debug("OpenGL version: %s", glGetString(GL_VERSION));
-    kp::debug("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    kp::debug("Vendor: %s", glGetString(GL_VENDOR));
-    kp::debug("Renderer: %s", glGetString(GL_RENDERER));
+    kp::debug::info("OpenGL version: %s", glGetString(GL_VERSION));
+    kp::debug::info("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    kp::debug::info("Vendor: %s", glGetString(GL_VENDOR));
+    kp::debug::info("Renderer: %s", glGetString(GL_RENDERER));
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);

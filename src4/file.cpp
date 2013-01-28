@@ -10,7 +10,7 @@ void kp::file::init(const char* argv0)
 {
     if(PHYSFS_init(argv0) == 0)
     {
-        kp::error("PHYSFS_init: %s", PHYSFS_getLastError());
+        kp::debug::fatal("PHYSFS_init: %s", PHYSFS_getLastError());
     }
 
 #ifdef __APPLE__
@@ -21,7 +21,7 @@ void kp::file::init(const char* argv0)
 
     if(PHYSFS_mount(directory, NULL, 1) == 0)
     {
-        kp::error("PHYSFS_mount(%c): %s", directory, PHYSFS_getLastError());
+        kp::debug::fatal("PHYSFS_mount(%c): %s", directory, PHYSFS_getLastError());
     }
 };
 
@@ -29,7 +29,7 @@ void kp::file::cleanup()
 {
     if(PHYSFS_deinit() == 0)
     {
-        kp::error("PHYSFS_deinit: %s", PHYSFS_getLastError());
+        kp::debug::fatal("PHYSFS_deinit: %s", PHYSFS_getLastError());
     }
 }
 
@@ -39,7 +39,9 @@ const char* kp::file::read(const char* filename)
 
     if(handle == NULL)
     {
-        kp::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
+        kp::debug::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
+        
+        return NULL;
     }
 
     // Create a buffer big enough for the file
@@ -51,7 +53,9 @@ const char* kp::file::read(const char* filename)
     // Read the bytes
     if(PHYSFS_readBytes(handle, buffer, size) != size)
     {
-        kp::error("PHYSFS_read: %s", PHYSFS_getLastError());
+        kp::debug::error("PHYSFS_read: %s", PHYSFS_getLastError());
+        
+        return NULL;
     }
 
     // Null terminate the buffer
