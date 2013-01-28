@@ -100,30 +100,61 @@ int main(int argc, char** argv)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
+    // Define and compile the shaders
     kp::gl::Shader* vertextShader = new kp::gl::Shader(kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
     kp::gl::Shader* fragmentShader = new kp::gl::Shader(kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
 
+    // Create the shader program
     GLuint shaderProgram = glCreateProgram();
-    
     glAttachShader(shaderProgram, vertextShader->shader);
-    
     glAttachShader(shaderProgram, fragmentShader->shader);
-    
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
     
+    // Send a color to the shader program
+    GLint triangleColor = glGetUniformLocation(shaderProgram, "triangleColor");
+    glUniform3f(triangleColor, 1.0f, 1.0f, 1.0f);
+    
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    
     glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    
     glEnableVertexAttribArray(posAttrib);
 
+    int mouseX, mouseY;
+    int windowWidth, windowHeight;
+    
     while(1)
     {
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+        glfwGetWindowSize(window, &windowWidth, &windowHeight);
+        
+        if (mouseX < 0)
+        {
+            mouseX = 0;
+        }
+        else if (mouseX > windowWidth)
+        {
+            mouseX = windowWidth;
+        }
+        
+        if (mouseY < 0)
+        {
+            mouseY = 0;
+        }
+        else if (mouseY > windowHeight)
+        {
+            mouseY = windowHeight;
+        }
+        
+        glUniform3f(triangleColor,
+                    (float)mouseX / (float)windowWidth,
+                    (float)mouseY / (float)windowHeight,
+                    1.0f - (float)mouseX / (float)windowWidth);
+        
         // Clear color buffer to black
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        // Draw the triangle
         glDrawArrays( GL_TRIANGLES, 0, 3 );
 
         // Swap buffers
