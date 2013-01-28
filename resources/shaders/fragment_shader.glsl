@@ -1,7 +1,7 @@
 #version 120
 
-uniform vec3 triangleColor;
+varying vec3 Color;
 
 void main() {
-    gl_FragColor = vec4(triangleColor, 1.0);
+    gl_FragColor = vec4(Color, 1.0);
 }

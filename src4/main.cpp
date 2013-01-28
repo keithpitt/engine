@@ -83,9 +83,10 @@ int main(int argc, char** argv)
     
     // Define the vertices for our triangle
     float vertices[] = {
-        0.0f,  0.5f,
-        0.5f, -0.5f,
-       -0.5f, -0.5f
+        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
     };
     
     // Create a vertex buffer
@@ -100,9 +101,20 @@ int main(int argc, char** argv)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
+    // Create an element buffer
+    GLuint elements[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+    
+    GLuint elementBuffer;
+    glGenBuffers(1, &elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+    
     // Define and compile the shaders
-    kp::gl::Shader* vertextShader = new kp::gl::Shader(kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
-    kp::gl::Shader* fragmentShader = new kp::gl::Shader(kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
+    kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.glsl", kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
+    kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.glsl", kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
 
     // Create the shader program
     GLuint shaderProgram = glCreateProgram();
@@ -111,13 +123,13 @@ int main(int argc, char** argv)
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
     
-    // Send a color to the shader program
-    GLint triangleColor = glGetUniformLocation(shaderProgram, "triangleColor");
-    glUniform3f(triangleColor, 1.0f, 1.0f, 1.0f);
-    
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
     glEnableVertexAttribArray(posAttrib);
+    
+    GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
+    glEnableVertexAttribArray(colorAttribute);
+    glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 
     int mouseX, mouseY;
     int windowWidth, windowHeight;
@@ -145,17 +157,13 @@ int main(int argc, char** argv)
             mouseY = windowHeight;
         }
         
-        glUniform3f(triangleColor,
-                    (float)mouseX / (float)windowWidth,
-                    (float)mouseY / (float)windowHeight,
-                    1.0f - (float)mouseX / (float)windowWidth);
-        
         // Clear color buffer to black
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         // Draw the triangle
-        glDrawArrays( GL_TRIANGLES, 0, 3 );
+        //glDrawArrays( GL_TRIANGLES, 0, 3 );
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Swap buffers
         glfwSwapBuffers(window);

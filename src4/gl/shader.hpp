@@ -11,10 +11,12 @@ namespace kp {
         public:
             
             const char* source;
+            const char* name;
+            
             GLenum type;
             GLuint shader;
             
-            Shader(const char* source, GLenum shaderType);
+            Shader(const char* name, const char* source, GLenum shaderType);
             
             ~Shader();
             

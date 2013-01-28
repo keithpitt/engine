@@ -3,8 +3,9 @@
 
 #include "../debug.hpp"
 
-kp::gl::Shader::Shader(const char* source, GLenum shaderType)
+kp::gl::Shader::Shader(const char* name, const char* source, GLenum shaderType)
 {
+    this->name = name;
     this->source = source;
     this->type = shaderType;
     
@@ -50,6 +51,6 @@ void kp::gl::Shader::compile()
         char buffer[1024];
         glGetShaderInfoLog(shader, sizeof(buffer), NULL, buffer);
         
-        kp::debug::error("Failed to compile buffer:\n%s", buffer);
+        kp::debug::error("Failed to compile shader `%s`:\n%s", name, buffer);
     }
 }
