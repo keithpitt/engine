@@ -1,8 +1,9 @@
 #include "shader.hpp"
-#include "debug.hpp"
 #include "gl.hpp"
 
-kp::Shader::Shader(const char* source, GLenum shaderType)
+#include "../debug.hpp"
+
+kp::gl::Shader::Shader(const char* source, GLenum shaderType)
 {
     this->source = source;
     this->type = shaderType;
@@ -10,7 +11,7 @@ kp::Shader::Shader(const char* source, GLenum shaderType)
     compile();
 };
 
-kp::Shader::~Shader()
+kp::gl::Shader::~Shader()
 {
     kp::debug::info("Freeing shader #%i",shader);
     
@@ -18,7 +19,7 @@ kp::Shader::~Shader()
     glDeleteShader(shader);
 }
 
-void kp::Shader::compile()
+void kp::gl::Shader::compile()
 {
     // Create a shader of the type specified
     shader = glCreateShader(type);

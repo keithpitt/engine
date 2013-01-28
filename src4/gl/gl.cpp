@@ -1,5 +1,6 @@
 #include "gl.hpp"
-#include "debug.hpp"
+
+#include "../debug.hpp"
 
 void kp::gl::error(const char * function, GLenum code) {
     switch (code) {

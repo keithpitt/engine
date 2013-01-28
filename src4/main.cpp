@@ -20,8 +20,9 @@
 #include "string.hpp"
 #include "file.hpp"
 #include "debug.hpp"
-#include "shader.hpp"
-#include "gl.hpp"
+
+#include "gl/gl.hpp"
+#include "gl/shader.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -100,8 +101,8 @@ int main(int argc, char** argv)
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    kp::Shader* vertextShader = new kp::Shader(kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
-    kp::Shader* fragmentShader = new kp::Shader(kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
+    kp::gl::Shader* vertextShader = new kp::gl::Shader(kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
+    kp::gl::Shader* fragmentShader = new kp::gl::Shader(kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
 
     GLuint shaderProgram = glCreateProgram();
     
