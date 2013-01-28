@@ -14,7 +14,7 @@ void kp::file::init(const char* argv0)
     }
 
 #ifdef __APPLE__
-    const char* directory = kp::string::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources");
+    const char* directory = kp::string::format("%s/%s", PHYSFS_getBaseDir(), "Contents/Resources").c_str();
 #else
     const char* directory = PHYSFS_getBaseDir();
 #endif

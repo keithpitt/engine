@@ -1,11 +1,14 @@
 #ifndef _STRING_HPP_
 #define _STRING_HPP_
 
+#include <string>
+
 namespace kp {
 
     namespace string {
 
-        const char* format(const char* format, ...);
+        std::string vformat(const char* format, va_list ap);
+        std::string format(const char* format, ...);
 
     }
 

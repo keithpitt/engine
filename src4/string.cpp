@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #endif
 
-std::string vformat (const char *fmt, va_list ap)
+std::string kp::string::vformat(const char* format, va_list ap)
 {
     // Allocate a buffer on the stack that's big enough for us almost
     // all the time.  Be prepared to allocate dynamically if it doesn't fit.
@@ -19,7 +19,7 @@ std::string vformat (const char *fmt, va_list ap)
     
     while (1) {
         // Try to vsnprintf into our buffer.
-        int needed = vsnprintf (buf, size, fmt, ap);
+        int needed = vsnprintf (buf, size, format, ap);
         // NB. C99 (which modern Linux and OS X follow) says vsnprintf
         // failure returns the length it would have needed.  But older
         // glibc and current Windows return -1 for failure, i.e., not
@@ -39,11 +39,11 @@ std::string vformat (const char *fmt, va_list ap)
     }
 }
 
-const char* kp::string::format(const char* format, ...) {
+std::string kp::string::format(const char* format, ...) {
     va_list args;
     va_start(args, format);
-    std::string formatted = vformat(format, args);
+	std::string formatted = kp::string::vformat(format, args);
     va_end(args);
 
-    return formatted.c_str();
+    return formatted;
 };
