@@ -16,7 +16,6 @@
 
 #include <glm/glm.hpp>
 
-// For the file class
 #include "string.hpp"
 #include "file.hpp"
 #include "debug.hpp"
