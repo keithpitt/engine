@@ -1,3 +1,0 @@
-file(GLOB_RECURSIVE ENGINE_HEADERS src/*.hpp)
-file(GLOB_RECURSIVE ENGINE_SOURCES src/*.cpp)
-add_library(engine ${ENGINE_HEADERS} ${ENGINE_SOURCES})
