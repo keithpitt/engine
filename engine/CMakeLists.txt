@@ -1,1 +1,3 @@
-file(GLOB_RECURSE ENGINE_SRCS *.cpp *.h)
+file(GLOB_RECURSE ENGINE_HEADERS src/*.hpp)
+file(GLOB_RECURSE ENGINE_SOURCES src/*.cpp)
+add_library(engine ${ENGINE_HEADERS} ${ENGINE_SOURCES})

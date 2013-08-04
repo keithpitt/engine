@@ -2,9 +2,8 @@ cmake_minimum_required(VERSION 2.8.9)
 
 project(Pong)
 
-file(GLOB_RECURSE SRCS *.cpp *.h)
-
-add_subdirectory(../../engine)
-
-add_executable(Pong ${ENGINE_SRCS})
+file(GLOB SRCS *.cpp)
 add_executable(Pong ${SRCS})
+
+add_subdirectory(engine)
+target_link_libraries(Pong engine)
