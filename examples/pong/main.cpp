@@ -8,6 +8,11 @@
 #include <stdlib.h>
 #include <stdexcept>
 
+
+#include "string.hpp"
+#include "file.hpp"
+#include "debug.hpp"
+
 #include <GL/glew.h>
 
 #define GLFW_DLL
@@ -16,9 +21,6 @@
 
 #include <glm/glm.hpp>
 
-#include "string.hpp"
-#include "file.hpp"
-#include "debug.hpp"
 
 #include "gl/gl.hpp"
 #include "gl/shader.hpp"
