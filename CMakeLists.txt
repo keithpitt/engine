@@ -58,8 +58,8 @@ endif()
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/extlibs/headers")
 
 # A list of header and source files used by your application.
-file(GLOB_RECURSE SOURCES "src4/*.cpp")
-file(GLOB_RECURSE HEADERS "src4/*.hpp")
+file(GLOB_RECURSE SOURCES "engine/*.cpp")
+file(GLOB_RECURSE HEADERS "engine/*.hpp")
 
 # Now we define what makes our executable.  First thing is the name,
 # WIN32 is needed to make this a Win32 GUI application, MACOSX_BUNDLE
