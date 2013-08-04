@@ -51,15 +51,17 @@ int main(int argc, char** argv)
     if (!window) {
         kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
-    
+
     // Create an OpenGL context on the window we've just created
     glfwMakeContextCurrent(window);
-    
+
     // Enable vertical sync (on cards that support it)
     glfwSwapInterval(1);
-    
+
     // Initialise GLEW
-    glewExperimental = GL_TRUE; //stops glew crashing on OSX :-/
+    // The glewExperimental line is necessary to force GLEW to use a modern OpenGL method for checking if a function is available.
+    // See: http://open.gl/context
+    glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if(err != GLEW_OK) {
         kp::debug::fatal("glewInit failed: %s\n", glewGetErrorString(err));
@@ -73,14 +75,14 @@ int main(int argc, char** argv)
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-    
+
     GLuint vao;
     glGenVertexArrays(1, &vao);
     kp::gl::error("glGenVertexArrays", glGetError());
-    
+
     glBindVertexArray(vao);
     kp::gl::error("glBindVertexArray", glGetError());
-    
+
     // Define the vertices for our triangle
     float vertices[] = {
         -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
@@ -88,30 +90,30 @@ int main(int argc, char** argv)
          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
         -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
     };
-    
+
     // Create a vertex buffer
     GLuint vbo;
     glGenBuffers(1, &vbo);
-    
+
     // Make the vbo the current vertext buffer object. We also tell
     // OpenGL that the VBO contains an array!
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    
+
     // Load the vertices array into the current vertext buffer object.
     // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
+
     // Create an element buffer
     GLuint elements[] = {
         0, 1, 2,
         2, 3, 0
     };
-    
+
     GLuint elementBuffer;
     glGenBuffers(1, &elementBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-    
+
     // Define and compile the shaders
     kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.glsl", kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
     kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.glsl", kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
@@ -122,23 +124,23 @@ int main(int argc, char** argv)
     glAttachShader(shaderProgram, fragmentShader->shader);
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
-    
+
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
     glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
     glEnableVertexAttribArray(posAttrib);
-    
+
     GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
     glEnableVertexAttribArray(colorAttribute);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 
     int mouseX, mouseY;
     int windowWidth, windowHeight;
-    
+
     while(1)
     {
         glfwGetCursorPos(window, &mouseX, &mouseY);
         glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        
+
         if (mouseX < 0)
         {
             mouseX = 0;
@@ -147,7 +149,7 @@ int main(int argc, char** argv)
         {
             mouseX = windowWidth;
         }
-        
+
         if (mouseY < 0)
         {
             mouseY = 0;
@@ -156,11 +158,11 @@ int main(int argc, char** argv)
         {
             mouseY = windowHeight;
         }
-        
+
         // Clear color buffer to black
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+
         // Draw the triangle
         //glDrawArrays( GL_TRIANGLES, 0, 3 );
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
