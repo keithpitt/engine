@@ -1,7 +1,3 @@
-# Mandrill
-
-It's amazing llama.
-
 ### Building PhysicsFS
 
 When building PhysicsFS, you have to disable unused archivers. This makes the file size smaller and fixes
