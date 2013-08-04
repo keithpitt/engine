@@ -52,7 +52,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C424882B17AE49A600D84E03 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
+		C424882B17AE49A600D84E03 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = SOURCE_ROOT; };
 		C45E6DFD17AE47B10014E37C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		C49B76E917AE3BC80042700A /* Pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49B76EC17AE3BC80042700A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -93,10 +93,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C411015917AE4BE5002281E2 /* Pong */ = {
+			isa = PBXGroup;
+			children = (
+				C424882B17AE49A600D84E03 /* main.cpp */,
+				C45E6DFD17AE47B10014E37C /* Info.plist */,
+			);
+			name = Pong;
+			sourceTree = "<group>";
+		};
 		C49B76E017AE3BC80042700A = {
 			isa = PBXGroup;
 			children = (
-				C49B76F217AE3BC80042700A /* Pong */,
+				C411015917AE4BE5002281E2 /* Pong */,
 				C49B78AB17AE40150042700A /* Resources */,
 				C49B788817AE3E3A0042700A /* Engine */,
 				C49B76EB17AE3BC80042700A /* Frameworks */,
@@ -125,15 +134,6 @@
 				C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C49B76F217AE3BC80042700A /* Pong */ = {
-			isa = PBXGroup;
-			children = (
-				C424882B17AE49A600D84E03 /* main.cpp */,
-				C45E6DFD17AE47B10014E37C /* Info.plist */,
-			);
-			path = Pong;
 			sourceTree = "<group>";
 		};
 		C49B788817AE3E3A0042700A /* Engine */ = {
@@ -235,12 +235,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C424882C17AE49A600D84E03 /* main.cpp in Sources */,
 				C49B789417AE3E3A0042700A /* debug.cpp in Sources */,
 				C49B789517AE3E3A0042700A /* file.cpp in Sources */,
 				C49B789617AE3E3A0042700A /* gl.cpp in Sources */,
 				C49B789717AE3E3A0042700A /* shader.cpp in Sources */,
 				C49B789817AE3E3A0042700A /* string.cpp in Sources */,
-				C424882C17AE49A600D84E03 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
