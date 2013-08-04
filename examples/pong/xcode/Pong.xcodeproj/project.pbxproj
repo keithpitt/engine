@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C45E6DFE17AE47B10014E37C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C45E6DFD17AE47B10014E37C /* Info.plist */; };
 		C49B76ED17AE3BC80042700A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B76EC17AE3BC80042700A /* Cocoa.framework */; };
 		C49B788717AE3D620042700A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B788617AE3D620042700A /* OpenGL.framework */; };
 		C49B789417AE3E3A0042700A /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49B788917AE3E3A0042700A /* debug.cpp */; };
@@ -54,12 +55,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C45E6DFD17AE47B10014E37C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		C49B76E917AE3BC80042700A /* Pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49B76EC17AE3BC80042700A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C49B76EF17AE3BC80042700A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		C49B76F017AE3BC80042700A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C49B76F117AE3BC80042700A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		C49B76F417AE3BC80042700A /* Pong-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pong-Info.plist"; sourceTree = "<group>"; };
 		C49B788617AE3D620042700A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C49B788917AE3E3A0042700A /* debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = debug.cpp; sourceTree = "<group>"; };
 		C49B788A17AE3E3A0042700A /* debug.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = debug.hpp; sourceTree = "<group>"; };
@@ -133,17 +134,9 @@
 			isa = PBXGroup;
 			children = (
 				C49B78A917AE3FC90042700A /* main.cpp */,
-				C49B76F317AE3BC80042700A /* Supporting Files */,
+				C45E6DFD17AE47B10014E37C /* Info.plist */,
 			);
 			path = Pong;
-			sourceTree = "<group>";
-		};
-		C49B76F317AE3BC80042700A /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				C49B76F417AE3BC80042700A /* Pong-Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		C49B788817AE3E3A0042700A /* Engine */ = {
@@ -245,6 +238,7 @@
 			files = (
 				C49B78AF17AE40220042700A /* fragment_shader.glsl in Resources */,
 				C49B78B017AE40220042700A /* vertex_shader.glsl in Resources */,
+				C45E6DFE17AE47B10014E37C /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,7 +328,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../engine/extlibs/headers\"",
 				);
-				INFOPLIST_FILE = "Pong/Pong-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../engine/extlibs/libs-osx\"",
@@ -354,7 +348,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../engine/extlibs/headers\"",
 				);
-				INFOPLIST_FILE = "Pong/Pong-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../engine/extlibs/libs-osx\"",
