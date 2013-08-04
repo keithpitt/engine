@@ -1,0 +1,308 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C4D9574617AE3A0E0050C2AB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D9574517AE3A0E0050C2AB /* Cocoa.framework */; };
+		C4D9575017AE3A0E0050C2AB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C4D9574E17AE3A0E0050C2AB /* InfoPlist.strings */; };
+		C4D9575217AE3A0E0050C2AB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D9575117AE3A0E0050C2AB /* main.m */; };
+		C4D9575617AE3A0E0050C2AB /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C4D9575417AE3A0E0050C2AB /* Credits.rtf */; };
+		C4D9575917AE3A0E0050C2AB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D9575817AE3A0E0050C2AB /* AppDelegate.m */; };
+		C4D9575C17AE3A0E0050C2AB /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C4D9575A17AE3A0E0050C2AB /* MainMenu.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C4D9574217AE3A0E0050C2AB /* pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4D9574517AE3A0E0050C2AB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		C4D9574817AE3A0E0050C2AB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		C4D9574917AE3A0E0050C2AB /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		C4D9574A17AE3A0E0050C2AB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C4D9574D17AE3A0E0050C2AB /* pong-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "pong-Info.plist"; sourceTree = "<group>"; };
+		C4D9574F17AE3A0E0050C2AB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C4D9575117AE3A0E0050C2AB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C4D9575317AE3A0E0050C2AB /* pong-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pong-Prefix.pch"; sourceTree = "<group>"; };
+		C4D9575517AE3A0E0050C2AB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		C4D9575717AE3A0E0050C2AB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C4D9575817AE3A0E0050C2AB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C4D9575B17AE3A0E0050C2AB /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C4D9573F17AE3A0E0050C2AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4D9574617AE3A0E0050C2AB /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C4D9573917AE3A0E0050C2AB = {
+			isa = PBXGroup;
+			children = (
+				C4D9574B17AE3A0E0050C2AB /* pong */,
+				C4D9574417AE3A0E0050C2AB /* Frameworks */,
+				C4D9574317AE3A0E0050C2AB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C4D9574317AE3A0E0050C2AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C4D9574217AE3A0E0050C2AB /* pong.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C4D9574417AE3A0E0050C2AB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C4D9574517AE3A0E0050C2AB /* Cocoa.framework */,
+				C4D9574717AE3A0E0050C2AB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C4D9574717AE3A0E0050C2AB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C4D9574817AE3A0E0050C2AB /* AppKit.framework */,
+				C4D9574917AE3A0E0050C2AB /* CoreData.framework */,
+				C4D9574A17AE3A0E0050C2AB /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		C4D9574B17AE3A0E0050C2AB /* pong */ = {
+			isa = PBXGroup;
+			children = (
+				C4D9575717AE3A0E0050C2AB /* AppDelegate.h */,
+				C4D9575817AE3A0E0050C2AB /* AppDelegate.m */,
+				C4D9575A17AE3A0E0050C2AB /* MainMenu.xib */,
+				C4D9574C17AE3A0E0050C2AB /* Supporting Files */,
+			);
+			path = pong;
+			sourceTree = "<group>";
+		};
+		C4D9574C17AE3A0E0050C2AB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C4D9574D17AE3A0E0050C2AB /* pong-Info.plist */,
+				C4D9574E17AE3A0E0050C2AB /* InfoPlist.strings */,
+				C4D9575117AE3A0E0050C2AB /* main.m */,
+				C4D9575317AE3A0E0050C2AB /* pong-Prefix.pch */,
+				C4D9575417AE3A0E0050C2AB /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C4D9574117AE3A0E0050C2AB /* pong */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C4D9575F17AE3A0E0050C2AB /* Build configuration list for PBXNativeTarget "pong" */;
+			buildPhases = (
+				C4D9573E17AE3A0E0050C2AB /* Sources */,
+				C4D9573F17AE3A0E0050C2AB /* Frameworks */,
+				C4D9574017AE3A0E0050C2AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = pong;
+			productName = pong;
+			productReference = C4D9574217AE3A0E0050C2AB /* pong.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C4D9573A17AE3A0E0050C2AB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Keith Pitt";
+			};
+			buildConfigurationList = C4D9573D17AE3A0E0050C2AB /* Build configuration list for PBXProject "pong" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C4D9573917AE3A0E0050C2AB;
+			productRefGroup = C4D9574317AE3A0E0050C2AB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C4D9574117AE3A0E0050C2AB /* pong */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C4D9574017AE3A0E0050C2AB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4D9575017AE3A0E0050C2AB /* InfoPlist.strings in Resources */,
+				C4D9575617AE3A0E0050C2AB /* Credits.rtf in Resources */,
+				C4D9575C17AE3A0E0050C2AB /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C4D9573E17AE3A0E0050C2AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4D9575217AE3A0E0050C2AB /* main.m in Sources */,
+				C4D9575917AE3A0E0050C2AB /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C4D9574E17AE3A0E0050C2AB /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C4D9574F17AE3A0E0050C2AB /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C4D9575417AE3A0E0050C2AB /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C4D9575517AE3A0E0050C2AB /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		C4D9575A17AE3A0E0050C2AB /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C4D9575B17AE3A0E0050C2AB /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C4D9575D17AE3A0E0050C2AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C4D9575E17AE3A0E0050C2AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C4D9576017AE3A0E0050C2AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pong/pong-Prefix.pch";
+				INFOPLIST_FILE = "pong/pong-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C4D9576117AE3A0E0050C2AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pong/pong-Prefix.pch";
+				INFOPLIST_FILE = "pong/pong-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C4D9573D17AE3A0E0050C2AB /* Build configuration list for PBXProject "pong" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4D9575D17AE3A0E0050C2AB /* Debug */,
+				C4D9575E17AE3A0E0050C2AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C4D9575F17AE3A0E0050C2AB /* Build configuration list for PBXNativeTarget "pong" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4D9576017AE3A0E0050C2AB /* Debug */,
+				C4D9576117AE3A0E0050C2AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C4D9573A17AE3A0E0050C2AB /* Project object */;
+}
