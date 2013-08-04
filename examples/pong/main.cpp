@@ -21,9 +21,8 @@
 
 #include <glm/glm.hpp>
 
-
-#include "gl/gl.hpp"
-#include "gl/shader.hpp"
+#include "gl.hpp"
+#include "shader.hpp"
 
 static void error_callback(int error, const char* description)
 {
