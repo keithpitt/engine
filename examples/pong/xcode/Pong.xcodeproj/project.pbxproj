@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C45E6DFE17AE47B10014E37C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C45E6DFD17AE47B10014E37C /* Info.plist */; };
+		C424882C17AE49A600D84E03 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C424882B17AE49A600D84E03 /* main.cpp */; };
 		C49B76ED17AE3BC80042700A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B76EC17AE3BC80042700A /* Cocoa.framework */; };
 		C49B788717AE3D620042700A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B788617AE3D620042700A /* OpenGL.framework */; };
 		C49B789417AE3E3A0042700A /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49B788917AE3E3A0042700A /* debug.cpp */; };
@@ -21,9 +21,6 @@
 		C49B78A617AE3F9E0042700A /* libGLEW.1.9.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789917AE3E730042700A /* libGLEW.1.9.0.dylib */; };
 		C49B78A717AE3FA10042700A /* libglfw.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789A17AE3E730042700A /* libglfw.3.0.dylib */; };
 		C49B78A817AE3FA40042700A /* libphysfs.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */; };
-		C49B78AA17AE3FC90042700A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49B78A917AE3FC90042700A /* main.cpp */; };
-		C49B78AF17AE40220042700A /* fragment_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.glsl */; };
-		C49B78B017AE40220042700A /* vertex_shader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.glsl */; };
 		C49B78B217AE40350042700A /* fragment_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.glsl */; };
 		C49B78B317AE40370042700A /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.glsl */; };
 /* End PBXBuildFile section */
@@ -55,6 +52,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C424882B17AE49A600D84E03 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
 		C45E6DFD17AE47B10014E37C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		C49B76E917AE3BC80042700A /* Pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49B76EC17AE3BC80042700A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -66,16 +64,15 @@
 		C49B788A17AE3E3A0042700A /* debug.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = debug.hpp; sourceTree = "<group>"; };
 		C49B788B17AE3E3A0042700A /* file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file.cpp; sourceTree = "<group>"; };
 		C49B788C17AE3E3A0042700A /* file.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = file.hpp; sourceTree = "<group>"; };
-		C49B788E17AE3E3A0042700A /* gl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gl.cpp; sourceTree = "<group>"; };
-		C49B788F17AE3E3A0042700A /* gl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gl.hpp; sourceTree = "<group>"; };
-		C49B789017AE3E3A0042700A /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
-		C49B789117AE3E3A0042700A /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
+		C49B788E17AE3E3A0042700A /* gl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gl.cpp; path = gl/gl.cpp; sourceTree = "<group>"; };
+		C49B788F17AE3E3A0042700A /* gl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = gl.hpp; path = gl/gl.hpp; sourceTree = "<group>"; };
+		C49B789017AE3E3A0042700A /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = gl/shader.cpp; sourceTree = "<group>"; };
+		C49B789117AE3E3A0042700A /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shader.hpp; path = gl/shader.hpp; sourceTree = "<group>"; };
 		C49B789217AE3E3A0042700A /* string.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = string.cpp; sourceTree = "<group>"; };
 		C49B789317AE3E3A0042700A /* string.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = string.hpp; sourceTree = "<group>"; };
 		C49B789917AE3E730042700A /* libGLEW.1.9.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.1.9.0.dylib; path = "../../../engine/extlibs/libs-osx/libGLEW.1.9.0.dylib"; sourceTree = "<group>"; };
 		C49B789A17AE3E730042700A /* libglfw.3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.0.dylib; path = "../../../engine/extlibs/libs-osx/libglfw.3.0.dylib"; sourceTree = "<group>"; };
 		C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libphysfs.2.1.0.dylib; path = "../../../engine/extlibs/libs-osx/libphysfs.2.1.0.dylib"; sourceTree = "<group>"; };
-		C49B78A917AE3FC90042700A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../main.cpp; sourceTree = "<group>"; };
 		C49B78AD17AE40220042700A /* fragment_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment_shader.glsl; sourceTree = "<group>"; };
 		C49B78AE17AE40220042700A /* vertex_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_shader.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,7 +130,7 @@
 		C49B76F217AE3BC80042700A /* Pong */ = {
 			isa = PBXGroup;
 			children = (
-				C49B78A917AE3FC90042700A /* main.cpp */,
+				C424882B17AE49A600D84E03 /* main.cpp */,
 				C45E6DFD17AE47B10014E37C /* Info.plist */,
 			);
 			path = Pong;
@@ -142,7 +139,10 @@
 		C49B788817AE3E3A0042700A /* Engine */ = {
 			isa = PBXGroup;
 			children = (
-				C49B788D17AE3E3A0042700A /* gl */,
+				C49B788E17AE3E3A0042700A /* gl.cpp */,
+				C49B788F17AE3E3A0042700A /* gl.hpp */,
+				C49B789017AE3E3A0042700A /* shader.cpp */,
+				C49B789117AE3E3A0042700A /* shader.hpp */,
 				C49B788917AE3E3A0042700A /* debug.cpp */,
 				C49B788A17AE3E3A0042700A /* debug.hpp */,
 				C49B788B17AE3E3A0042700A /* file.cpp */,
@@ -152,17 +152,6 @@
 			);
 			name = Engine;
 			path = ../../../engine/src;
-			sourceTree = "<group>";
-		};
-		C49B788D17AE3E3A0042700A /* gl */ = {
-			isa = PBXGroup;
-			children = (
-				C49B788E17AE3E3A0042700A /* gl.cpp */,
-				C49B788F17AE3E3A0042700A /* gl.hpp */,
-				C49B789017AE3E3A0042700A /* shader.cpp */,
-				C49B789117AE3E3A0042700A /* shader.hpp */,
-			);
-			path = gl;
 			sourceTree = "<group>";
 		};
 		C49B78AB17AE40150042700A /* Resources */ = {
@@ -236,9 +225,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C49B78AF17AE40220042700A /* fragment_shader.glsl in Resources */,
-				C49B78B017AE40220042700A /* vertex_shader.glsl in Resources */,
-				C45E6DFE17AE47B10014E37C /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,7 +240,7 @@
 				C49B789617AE3E3A0042700A /* gl.cpp in Sources */,
 				C49B789717AE3E3A0042700A /* shader.cpp in Sources */,
 				C49B789817AE3E3A0042700A /* string.cpp in Sources */,
-				C49B78AA17AE3FC90042700A /* main.cpp in Sources */,
+				C424882C17AE49A600D84E03 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

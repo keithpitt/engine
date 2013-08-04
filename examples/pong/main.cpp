@@ -1,13 +1,6 @@
-//========================================================================
-// This is a small test application for GLFW.
-// The program opens a window (640x480), and renders a spinning colored
-// triangle (it is controlled with both the GLFW timer and the mouse).
-//========================================================================
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdexcept>
-
 
 #include "string.hpp"
 #include "file.hpp"
