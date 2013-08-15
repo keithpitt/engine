@@ -2,7 +2,7 @@
 #define _GL_HPP_
 
 #include <GL/glew.h>
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 // Apples glGenVertexArrays extensions end with APPLE, but they
 // work exactly the same. Lets just redefined them here with what

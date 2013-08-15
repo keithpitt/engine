@@ -10,7 +10,7 @@
 
 #define GLFW_DLL
 #define GLFW_INCLUDE_GLU
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow(1024, 768, "Mandrill", NULL, NULL);
+    window = glfwCreateWindow(1440, 900, "Mandrill", NULL, NULL);
     if (!window) {
         kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
@@ -109,8 +109,8 @@ int main(int argc, char** argv)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
     // Define and compile the shaders
-    kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.glsl", kp::file::read("shaders/vertex_shader.glsl"), GL_VERTEX_SHADER);
-    kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.glsl", kp::file::read("shaders/fragment_shader.glsl"), GL_FRAGMENT_SHADER);
+    kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.vsh", kp::file::read("shaders/vertex_shader.vsh"), GL_VERTEX_SHADER);
+    kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.fsh", kp::file::read("shaders/fragment_shader.fsh"), GL_FRAGMENT_SHADER);
 
     // Create the shader program
     GLuint shaderProgram = glCreateProgram();
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
     glEnableVertexAttribArray(colorAttribute);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 
-    int mouseX, mouseY;
+    double mouseX, mouseY;
     int windowWidth, windowHeight;
 
     while(1)
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
         // Check if the ESC key was pressed or the window should be closed
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwGetKey(window, GLFW_KEY_ENTER))
             break;
-        if (glfwGetWindowParam(window, GLFW_SHOULD_CLOSE))
+        if (glfwWindowShouldClose(window))
             break;
     }
 

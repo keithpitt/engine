@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C411015B17AE4C7B002281E2 /* icon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = C411015A17AE4C7B002281E2 /* icon.iconset */; };
 		C424882C17AE49A600D84E03 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C424882B17AE49A600D84E03 /* main.cpp */; };
 		C49B76ED17AE3BC80042700A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B76EC17AE3BC80042700A /* Cocoa.framework */; };
 		C49B788717AE3D620042700A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B788617AE3D620042700A /* OpenGL.framework */; };
@@ -22,8 +21,8 @@
 		C49B78A617AE3F9E0042700A /* libGLEW.1.9.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789917AE3E730042700A /* libGLEW.1.9.0.dylib */; };
 		C49B78A717AE3FA10042700A /* libglfw.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789A17AE3E730042700A /* libglfw.3.0.dylib */; };
 		C49B78A817AE3FA40042700A /* libphysfs.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */; };
-		C49B78B217AE40350042700A /* fragment_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.glsl */; };
-		C49B78B317AE40370042700A /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.glsl */; };
+		C49B78B217AE40350042700A /* fragment_shader.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.fsh */; };
+		C49B78B317AE40370042700A /* vertex_shader.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.vsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,15 +44,14 @@
 			dstPath = shaders;
 			dstSubfolderSpec = 7;
 			files = (
-				C49B78B217AE40350042700A /* fragment_shader.glsl in CopyFiles */,
-				C49B78B317AE40370042700A /* vertex_shader.glsl in CopyFiles */,
+				C49B78B217AE40350042700A /* fragment_shader.fsh in CopyFiles */,
+				C49B78B317AE40370042700A /* vertex_shader.vsh in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C411015A17AE4C7B002281E2 /* icon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = icon.iconset; sourceTree = "<group>"; };
 		C424882B17AE49A600D84E03 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = SOURCE_ROOT; };
 		C45E6DFD17AE47B10014E37C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		C49B76E917AE3BC80042700A /* Pong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pong.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,8 +73,8 @@
 		C49B789917AE3E730042700A /* libGLEW.1.9.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.1.9.0.dylib; path = "../../../engine/extlibs/libs-osx/libGLEW.1.9.0.dylib"; sourceTree = "<group>"; };
 		C49B789A17AE3E730042700A /* libglfw.3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.0.dylib; path = "../../../engine/extlibs/libs-osx/libglfw.3.0.dylib"; sourceTree = "<group>"; };
 		C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libphysfs.2.1.0.dylib; path = "../../../engine/extlibs/libs-osx/libphysfs.2.1.0.dylib"; sourceTree = "<group>"; };
-		C49B78AD17AE40220042700A /* fragment_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment_shader.glsl; sourceTree = "<group>"; };
-		C49B78AE17AE40220042700A /* vertex_shader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_shader.glsl; sourceTree = "<group>"; };
+		C49B78AD17AE40220042700A /* fragment_shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fragment_shader.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
+		C49B78AE17AE40220042700A /* vertex_shader.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = vertex_shader.vsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +105,6 @@
 		C49B76E017AE3BC80042700A = {
 			isa = PBXGroup;
 			children = (
-				C411015A17AE4C7B002281E2 /* icon.iconset */,
 				C411015917AE4BE5002281E2 /* Pong */,
 				C49B78AB17AE40150042700A /* Resources */,
 				C49B788817AE3E3A0042700A /* Engine */,
@@ -168,8 +165,8 @@
 		C49B78AC17AE40220042700A /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
-				C49B78AD17AE40220042700A /* fragment_shader.glsl */,
-				C49B78AE17AE40220042700A /* vertex_shader.glsl */,
+				C49B78AD17AE40220042700A /* fragment_shader.fsh */,
+				C49B78AE17AE40220042700A /* vertex_shader.vsh */,
 			);
 			name = Shaders;
 			path = ../shaders;
@@ -228,7 +225,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C411015B17AE4C7B002281E2 /* icon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
