@@ -24,6 +24,8 @@
 		C49B78B217AE40350042700A /* fragment_shader.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.fsh */; };
 		C49B78B317AE40370042700A /* vertex_shader.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.vsh */; };
 		C4A1710417BF534200D7CB9E /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = C4A1710317BF534200D7CB9E /* cat.png */; };
+		C4A1710817BFA2E100D7CB9E /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */; };
+		C4A1710917BFA2F300D7CB9E /* libpng16.16.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +38,7 @@
 				C49B78A317AE3F820042700A /* libGLEW.1.9.0.dylib in CopyFiles */,
 				C49B78A517AE3F850042700A /* libphysfs.2.1.0.dylib in CopyFiles */,
 				C49B78A417AE3F830042700A /* libglfw.3.0.dylib in CopyFiles */,
+				C4A1710917BFA2F300D7CB9E /* libpng16.16.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +80,7 @@
 		C49B78AD17AE40220042700A /* fragment_shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fragment_shader.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		C49B78AE17AE40220042700A /* vertex_shader.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = vertex_shader.vsh; sourceTree = "<group>"; };
 		C4A1710317BF534200D7CB9E /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cat.png; path = ../assets/cat.png; sourceTree = "<group>"; };
+		C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.dylib; path = "../../../engine/extlibs/libs-osx/libpng16.16.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +93,7 @@
 				C49B78A617AE3F9E0042700A /* libGLEW.1.9.0.dylib in Frameworks */,
 				C49B78A717AE3FA10042700A /* libglfw.3.0.dylib in Frameworks */,
 				C49B78A817AE3FA40042700A /* libphysfs.2.1.0.dylib in Frameworks */,
+				C4A1710817BFA2E100D7CB9E /* libpng16.16.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +140,7 @@
 				C49B789917AE3E730042700A /* libGLEW.1.9.0.dylib */,
 				C49B789A17AE3E730042700A /* libglfw.3.0.dylib */,
 				C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */,
+				C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

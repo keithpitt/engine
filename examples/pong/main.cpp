@@ -16,14 +16,20 @@
 #include <glm/gtc/type_ptr.hpp> // Includes functions in converting glm matricies to opengl ones
 #include <glm/gtc/matrix_transform.hpp> // Matrix transformation functions
 
+#include <png/png.h>
+
 #include "gl.hpp"
 #include "shader.hpp"
 
+#include <physfs/physfs.h>
+
 bool jumping = false;
+bool facingRight = true;
+
 float yVelocity = 0;
 float leftVelocity = 0;
 float rightVelocity = 0;
-float speed = 0.05;
+float speed = 0.1f;
 
 bool qToggle = false;
 
@@ -35,7 +41,7 @@ static void error_callback(int error, const char* description)
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         jumping = true;
-        yVelocity += 0.4f;
+        yVelocity += 0.5f;
     }
     
     if(key == GLFW_KEY_Q && action == GLFW_PRESS) {
@@ -45,6 +51,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if(key == GLFW_KEY_RIGHT) {
         if(action == GLFW_PRESS) {
             rightVelocity += speed;
+            facingRight = true;
         } else if (action == GLFW_RELEASE) {
             rightVelocity = 0;
         }
@@ -53,10 +60,20 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if(key == GLFW_KEY_LEFT) {
         if(action == GLFW_PRESS) {
             leftVelocity -= speed;
+            facingRight = false;
         } else if (action == GLFW_RELEASE) {
             leftVelocity = 0;
         }
     }
+}
+
+void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
+    //Here we get our IO pointer back from the read struct.
+    //This is the parameter we passed to the png_set_read_fn() function.
+    //Our std::istream pointer.
+    PHYSFS_File* handle = (PHYSFS_File*)png_get_io_ptr(png_ptr);
+    
+    PHYSFS_readBytes(handle, data, length);
 }
 
 int SCREEN_WIDTH = 1400;
@@ -80,7 +97,6 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_SAMPLES, 32);
-
     
     // Open a window and create its OpenGL context
     window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", NULL, NULL);
@@ -95,6 +111,11 @@ int main(int argc, char** argv)
 
     // Enable vertical sync (on cards that support it)
     glfwSwapInterval(1);
+    
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     // Initialise GLEW
     // The glewExperimental line is necessary to force GLEW to use a modern OpenGL method for checking if a function is available.
@@ -128,15 +149,144 @@ int main(int argc, char** argv)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     // Clamp the texture right up to the edges of the thing
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // Stolen mostly from: http://en.wikibooks.org/wiki/OpenGL_Programming/Intermediate/Textures
+    // Expect mine uses PhysicsFS as a source
+    // With help from: http://www.piko3d.com/tutorials/libpng-tutorial-loading-png-files-from-streams
+    
+    const char* filename = "cat.png";
+    
+    PHYSFS_File* handle = PHYSFS_openRead(filename);
+    
+    if(handle == NULL)
+    {
+        kp::debug::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
+        
+        return NULL;
+    }
+    
+    int pngSigSize = 8;
+    png_byte pngsig[8];
+    
+    // Read the bytes
+    if(PHYSFS_readBytes(handle, pngsig, pngSigSize) != pngSigSize)
+    {
+        kp::debug::error("PHYSFS_read: %s", PHYSFS_getLastError());
+        
+        return NULL;
+    }
+    
+    int is_png = png_sig_cmp(pngsig, 0, pngSigSize);
+    if (is_png != 0) kp::debug::error("libpng failed to validate %s with error code %i", filename, is_png);
+    
+    png_structp pngReadStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if(!pngReadStruct) kp::debug::error("Failed png_create_read_struct");
+    
+    png_infop pngInfoStruct = png_create_info_struct(pngReadStruct);
+    if(!pngInfoStruct) kp::debug::error("Failed png_create_info_struct");
+    
+
+    png_set_read_fn(pngReadStruct, (png_voidp)handle, user_read_data);
+    
+    png_set_sig_bytes(pngReadStruct, pngSigSize);
+    
+    png_read_info(pngReadStruct, pngInfoStruct);
+    
+    
+    png_uint_32 imgWidth =  png_get_image_width(pngReadStruct, pngInfoStruct);
+    png_uint_32 imgHeight = png_get_image_height(pngReadStruct, pngInfoStruct);
+    
+
+    // Update the png info struct.
+    png_read_update_info(pngReadStruct, pngInfoStruct);
+    
+    // Row size in bytes.
+    png_size_t rowbytes = png_get_rowbytes(pngReadStruct, pngInfoStruct);
+    
+    // Allocate the image_data as a big block, to be given to opengl
+    png_byte *image_data = new png_byte[rowbytes * imgHeight];
+    if (!image_data) {
+        //clean up memory and close stuff
+        //break
+    }
+    
+    //row_pointers is for pointing to image_data for reading the png with libpng
+    png_bytep *row_pointers = new png_bytep[imgHeight];
+    if (!row_pointers) {
+        //break
+    }
+    
+    // set the individual row_pointers to point at the correct offsets of image_data
+    for (int i = 0; i < imgHeight; ++i) {
+        row_pointers[i] = image_data + i * rowbytes;
+        // load image in reverse order
+        // row_pointers[imgHeight - 1 - i] = image_data + i * rowbytes;
+    }
+    
+    //read the png into image_data through row_pointers
+    png_read_image(pngReadStruct, row_pointers);
+    
+    kp::debug::info("Successfully loaded %s [%ix%i]", filename, imgWidth, imgHeight);
+    
+
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)image_data);
+    
+    //clean up memory and close stuff
+    png_destroy_read_struct(&pngReadStruct, &pngInfoStruct, NULL);
+    delete[] image_data;
+    delete[] row_pointers;
+
+    
+    // Close the file handle
+    PHYSFS_close(handle);
+    
+    
+    
+    
+    
+    
+    
     
     // Black/white checkerboard
+    /*
     float pixels[] = {
         0.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
     };
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels );
+     */
     
     // Pre-generate the mip maps for performance
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -248,35 +398,44 @@ int main(int argc, char** argv)
         ////////////////////
         
         modelMatrix = glm::translate(glm::mat4(), position);
+        
+        if (!facingRight) {
+            modelMatrix = glm::rotate(modelMatrix, 180.0f, glm::vec3(0, 1, 0));
+        }
+        
         glUniformMatrix4fv(modelAttribute, 1, GL_FALSE, glm::value_ptr(modelMatrix));
         
         ////////////////////
         
         float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
         
-        if(qToggle) {
-            projectionMatrix = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, 0.0f, 100.0f);
+        if(!qToggle) {
+            projectionMatrix = glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, 0.0f, 100.0f);
             
             // scale the project down so we can see more of the screen - not sure if this is a good
             // idea or not. we'll see i suppose.
-            projectionMatrix = glm::scale(projectionMatrix, glm::vec3(0.25, 0.25, 1));
+            projectionMatrix = glm::scale(projectionMatrix, glm::vec3(0.25f));
             
-            cameraPosition = glm::vec3(0, 0, 5);
-            lookAtPosition = glm::vec3(cameraPosition.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            cameraPosition = glm::vec3(0, 2.5, 5);
+            lookAtPosition = glm::vec3(cameraPosition.x, cameraPosition.y, cameraPosition.z - 3);
             
-            //cameraPosition = glm::vec3(position.x, position.y, position.z);
-            //cameraPosition.z -= 5;
-            //cameraPosition.y += 1;
         } else {
             projectionMatrix = glm::perspective(50.0f, aspectRatio, 0.1f, 100.0f);
             
-            // follow cam
-            // cameraPosition = glm::vec3(0, 0, 3);
-            // lookAtPosition = glm::vec3(position.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            // fly by cam
+            //cameraPosition = glm::vec3(0, 0, 3);
+            //lookAtPosition = glm::vec3(position.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            
+            //cameraPosition = glm::vec3(position.x, 0, position.z);
+            //cameraPosition.z += 5;
+            //cameraPosition.y += 1;
+            //lookAtPosition = glm::vec3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+            //lookAtPosition.z -= 1;
             
             // scene cam
-            cameraPosition = glm::vec3(2, 2, 3);
+            cameraPosition = glm::vec3(2, 2, 4);
             lookAtPosition = glm::vec3(0, 0, 0);
+            
         }
         
         glUniformMatrix4fv(projectionAttribute, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
@@ -290,7 +449,7 @@ int main(int argc, char** argv)
         ////////////////////
         
         // Clear color buffer to black
-        glClearColor(4.0 / 255.0f, 57.0 / 255.0f, 83.0 / 255.0f, 0.f);
+        glClearColor(253.0 / 255.0f, 238.0 / 255.0f, 230.0 / 255.0f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw the triangle

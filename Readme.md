@@ -24,3 +24,12 @@ via the steps below:
 otool -L libglfw.3.0.dylib # to check its location
 install_name_tool -id @executable_path/../Frameworks/libglfw.3.0.dylib libglfw.3.0.dylib # to change its location
 ```
+
+### Building libpng
+
+```bash
+cp ./scripts/makefile.darwin makefile
+make ARCH="-arch i386 -arch x86_64" # it includes ppc for some silly reason
+sudo make install
+make clean
+```
