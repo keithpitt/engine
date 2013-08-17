@@ -12,15 +12,55 @@
 #define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> // Base glm types which include glm::vec3, glm::vec4, glm::ivec4, glm::mat4
+#include <glm/gtc/type_ptr.hpp> // Includes functions in converting glm matricies to opengl ones
+#include <glm/gtc/matrix_transform.hpp> // Matrix transformation functions
 
 #include "gl.hpp"
 #include "shader.hpp"
+
+bool jumping = false;
+float yVelocity = 0;
+float leftVelocity = 0;
+float rightVelocity = 0;
+float speed = 0.05;
+
+bool qToggle = false;
 
 static void error_callback(int error, const char* description)
 {
     kp::debug::fatal(description);
 }
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        jumping = true;
+        yVelocity += 0.4f;
+    }
+    
+    if(key == GLFW_KEY_Q && action == GLFW_PRESS) {
+        qToggle = !qToggle;
+    }
+    
+    if(key == GLFW_KEY_RIGHT) {
+        if(action == GLFW_PRESS) {
+            rightVelocity += speed;
+        } else if (action == GLFW_RELEASE) {
+            rightVelocity = 0;
+        }
+    }
+    
+    if(key == GLFW_KEY_LEFT) {
+        if(action == GLFW_PRESS) {
+            leftVelocity -= speed;
+        } else if (action == GLFW_RELEASE) {
+            leftVelocity = 0;
+        }
+    }
+}
+
+int SCREEN_WIDTH = 1400;
+int SCREEN_HEIGHT = 900;
 
 int main(int argc, char** argv)
 {
@@ -39,15 +79,19 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_SAMPLES, 32);
 
+    
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow(1440, 900, "Mandrill", NULL, NULL);
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", NULL, NULL);
     if (!window) {
         kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
     }
 
     // Create an OpenGL context on the window we've just created
     glfwMakeContextCurrent(window);
+    
+    glfwSetKeyCallback(window, key_callback);
 
     // Enable vertical sync (on cards that support it)
     glfwSwapInterval(1);
@@ -77,11 +121,11 @@ int main(int argc, char** argv)
     glBindVertexArray(vao);
     kp::gl::error("glBindVertexArray", glGetError());
 
-    // Define the vertices for our triangle
+    // Define the vertices for our triangle    
     float vertices[] = {
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+        -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, // Top-left
+        0.5f,  0.5f, 1.0f, 1.0f, 1.0f, // Top-right
+        0.5f, -0.5f, 1.0f, 1.0f, 1.0f, // Bottom-right
         -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
     };
 
@@ -126,35 +170,85 @@ int main(int argc, char** argv)
     GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
     glEnableVertexAttribArray(colorAttribute);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
-
-    double mouseX, mouseY;
-    int windowWidth, windowHeight;
-
+    
+    GLint cameraAttribute = glGetUniformLocation(shaderProgram, "camera");
+    glEnableVertexAttribArray(cameraAttribute);
+    
+    GLint modelAttribute = glGetUniformLocation(shaderProgram, "model");
+    glEnableVertexAttribArray(modelAttribute);
+    
+    GLint projectionAttribute = glGetUniformLocation(shaderProgram, "projection");
+    glEnableVertexAttribArray(projectionAttribute);
+    
+    glm::mat4 cameraMatrix = glm::mat4();
+    glm::mat4 modelMatrix;
+    glm::mat4 projectionMatrix;
+    
+    glm::vec3 position = glm::vec3(0, 2, 0);
+    
+    glm::vec3 cameraPosition = glm::vec3(3, 3, 3);
+    
+    jumping = true;
+    
+    float counter = 0.0;
+    
+    float gravity = -0.05f;
+    
     while(1)
     {
-        glfwGetCursorPos(window, &mouseX, &mouseY);
-        glfwGetWindowSize(window, &windowWidth, &windowHeight);
-
-        if (mouseX < 0)
-        {
-            mouseX = 0;
+        
+        if(jumping) {
+            yVelocity += gravity;
         }
-        else if (mouseX > windowWidth)
-        {
-            mouseX = windowWidth;
+        
+        position.y += yVelocity;
+        position.x += rightVelocity + leftVelocity;
+        
+        if(position.y <= 0) {
+            position.y = 0;
+            yVelocity = 0;
+            jumping = false;
         }
-
-        if (mouseY < 0)
-        {
-            mouseY = 0;
+        
+        glm::vec3 lookAtPosition;
+        
+        ////////////////////
+        
+        modelMatrix = glm::translate(glm::mat4(), position);
+        glUniformMatrix4fv(modelAttribute, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        
+        ////////////////////
+        
+        float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+        
+        if(qToggle) {
+            projectionMatrix = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, 0.0f, 100.0f);
+            
+            cameraPosition = glm::vec3(0, 0, 3);
+            lookAtPosition = glm::vec3(cameraPosition.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            
+            //cameraPosition = glm::vec3(position.x, position.y, position.z);
+            //cameraPosition.z -= 5;
+            //cameraPosition.y += 1;
+        } else {
+            projectionMatrix = glm::perspective(50.0f, aspectRatio, 0.1f, 100.0f);
+            
+            cameraPosition = glm::vec3(0, 0, 3);
+            lookAtPosition = glm::vec3(position.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
         }
-        else if (mouseY > windowHeight)
-        {
-            mouseY = windowHeight;
-        }
-
+        
+        glUniformMatrix4fv(projectionAttribute, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        
+        ////////////////////
+        
+        cameraMatrix = glm::lookAt(cameraPosition, lookAtPosition, glm::vec3(0,1,0));
+        
+        glUniformMatrix4fv(cameraAttribute, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+        
+        ////////////////////
+        
         // Clear color buffer to black
-        glClearColor(0.f, 0.f, 0.f, 0.f);
+        glClearColor(4.0 / 255.0f, 57.0 / 255.0f, 83.0 / 255.0f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw the triangle
@@ -170,6 +264,8 @@ int main(int argc, char** argv)
             break;
         if (glfwWindowShouldClose(window))
             break;
+        
+        counter+= 0.14;
     }
 
     // Close OpenGL window and terminate GLFW
