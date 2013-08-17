@@ -23,6 +23,7 @@
 		C49B78A817AE3FA40042700A /* libphysfs.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */; };
 		C49B78B217AE40350042700A /* fragment_shader.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AD17AE40220042700A /* fragment_shader.fsh */; };
 		C49B78B317AE40370042700A /* vertex_shader.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = C49B78AE17AE40220042700A /* vertex_shader.vsh */; };
+		C4A1710417BF534200D7CB9E /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = C4A1710317BF534200D7CB9E /* cat.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -75,6 +76,7 @@
 		C49B789B17AE3E730042700A /* libphysfs.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libphysfs.2.1.0.dylib; path = "../../../engine/extlibs/libs-osx/libphysfs.2.1.0.dylib"; sourceTree = "<group>"; };
 		C49B78AD17AE40220042700A /* fragment_shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fragment_shader.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		C49B78AE17AE40220042700A /* vertex_shader.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = vertex_shader.vsh; sourceTree = "<group>"; };
+		C4A1710317BF534200D7CB9E /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cat.png; path = ../assets/cat.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 			children = (
 				C424882B17AE49A600D84E03 /* main.cpp */,
 				C45E6DFD17AE47B10014E37C /* Info.plist */,
+				C4A1710317BF534200D7CB9E /* cat.png */,
 			);
 			name = Pong;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4A1710417BF534200D7CB9E /* cat.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

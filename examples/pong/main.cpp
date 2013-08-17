@@ -113,7 +113,35 @@ int main(int argc, char** argv)
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    
+    // Texture time!
+    GLuint texture;
+    glGenTextures(1, &texture);
+    kp::gl::error("glGenTextures", glGetError());
 
+    glBindTexture(GL_TEXTURE_2D, texture);
+    kp::gl::error("glBindTexture", glGetError());
+    
+    // When the texture gets bigger/smaller, how to do the actual resizing?
+    // Nearest neighbour interpolation is more suited in games that want to mimic 8 bit graphics, because of the pixelated look.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    // Clamp the texture right up to the edges of the thing
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    
+    // Black/white checkerboard
+    float pixels[] = {
+        0.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
+    };
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels );
+    
+    // Pre-generate the mip maps for performance
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    // Vertixes time!
     GLuint vao;
     glGenVertexArrays(1, &vao);
     kp::gl::error("glGenVertexArrays", glGetError());
@@ -123,10 +151,11 @@ int main(int argc, char** argv)
 
     // Define the vertices for our triangle    
     float vertices[] = {
-        -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, // Top-left
-        0.5f,  0.5f, 1.0f, 1.0f, 1.0f, // Top-right
-        0.5f, -0.5f, 1.0f, 1.0f, 1.0f, // Bottom-right
-        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
+      // x      y     color             texcords
+        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Top-left
+         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // Top-right
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Bottom-right
+        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // Bottom-left
     };
 
     // Create a vertex buffer
@@ -164,12 +193,16 @@ int main(int argc, char** argv)
     glUseProgram(shaderProgram);
 
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
     glEnableVertexAttribArray(posAttrib);
 
     GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
     glEnableVertexAttribArray(colorAttribute);
-    glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
+    glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(2*sizeof(float)));
+    
+    GLint texCordAttribute = glGetAttribLocation(shaderProgram, "texcord");
+    glEnableVertexAttribArray(texCordAttribute);
+    glVertexAttribPointer(texCordAttribute, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
     
     GLint cameraAttribute = glGetUniformLocation(shaderProgram, "camera");
     glEnableVertexAttribArray(cameraAttribute);
@@ -224,7 +257,11 @@ int main(int argc, char** argv)
         if(qToggle) {
             projectionMatrix = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f, 0.0f, 100.0f);
             
-            cameraPosition = glm::vec3(0, 0, 3);
+            // scale the project down so we can see more of the screen - not sure if this is a good
+            // idea or not. we'll see i suppose.
+            projectionMatrix = glm::scale(projectionMatrix, glm::vec3(0.25, 0.25, 1));
+            
+            cameraPosition = glm::vec3(0, 0, 5);
             lookAtPosition = glm::vec3(cameraPosition.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
             
             //cameraPosition = glm::vec3(position.x, position.y, position.z);
@@ -233,8 +270,13 @@ int main(int argc, char** argv)
         } else {
             projectionMatrix = glm::perspective(50.0f, aspectRatio, 0.1f, 100.0f);
             
-            cameraPosition = glm::vec3(0, 0, 3);
-            lookAtPosition = glm::vec3(position.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            // follow cam
+            // cameraPosition = glm::vec3(0, 0, 3);
+            // lookAtPosition = glm::vec3(position.x, cameraPosition.y + 0.25, cameraPosition.z - 3);
+            
+            // scene cam
+            cameraPosition = glm::vec3(2, 2, 3);
+            lookAtPosition = glm::vec3(0, 0, 0);
         }
         
         glUniformMatrix4fv(projectionAttribute, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
