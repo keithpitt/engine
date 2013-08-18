@@ -48,3 +48,16 @@ bcp --boost=/usr/local/include format.hpp .
 ### Logging
 
 See: https://github.com/elanthis/easylogger
+
+### Flat Header Map
+
+Build Settings -> Editior Menu -> Add Build Setting -> Add User Defined Settings
+
+```
+USE_HEADERMAP = NO
+```
+
+This allows us to `#include "engine/logger.hpp"`. By default, Xcode ignores the directory
+structure of the header files, and just lets you do whatever you like. `#include "logger"` for
+example. Problem with that though, is that if you have headers of the same name, you're kinda
+screwed. I also prefer to use the correct namespaces.
