@@ -1,7 +1,7 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
-#include <GL/glew.h>
+#include <glew/glew.h>
 
 namespace kp {
     

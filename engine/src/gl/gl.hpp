@@ -1,9 +1,11 @@
 #ifndef _GL_HPP_
 #define _GL_HPP_
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
 
+
+/*
 // Apples glGenVertexArrays extensions end with APPLE, but they
 // work exactly the same. Lets just redefined them here with what
 // they ought to be. If you call glGenVertexArrays on OSX without
@@ -18,6 +20,7 @@
     #define glGenVertexArrays glGenVertexArraysAPPLE
     #define glBindVertexArray glBindVertexArrayAPPLE
 #endif
+*/
 
 namespace kp {
     

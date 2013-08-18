@@ -6,17 +6,17 @@
 #include "file.hpp"
 #include "debug.hpp"
 
-#include <GL/glew.h>
+#include <glew/glew.h>
 
 #define GLFW_DLL
 #define GLFW_INCLUDE_GLU
-#include <GLFW/glfw3.h>
+#include <glfw/glfw3.h>
 
 #include <glm/glm.hpp> // Base glm types which include glm::vec3, glm::vec4, glm::ivec4, glm::mat4
 #include <glm/gtc/type_ptr.hpp> // Includes functions in converting glm matricies to opengl ones
 #include <glm/gtc/matrix_transform.hpp> // Matrix transformation functions
 
-#include <png/png.h>
+#include <libpng/png.h>
 
 #include "gl.hpp"
 #include "shader.hpp"
@@ -48,7 +48,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         qToggle = !qToggle;
     }
     
-    if(key == GLFW_KEY_RIGHT) {
+    if(key == GLFW_KEY_RIGHT || key == GLFW_KEY_D) {
         if(action == GLFW_PRESS) {
             rightVelocity += speed;
             facingRight = true;
@@ -57,7 +57,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         }
     }
     
-    if(key == GLFW_KEY_LEFT) {
+    if(key == GLFW_KEY_LEFT || key == GLFW_KEY_A) {
         if(action == GLFW_PRESS) {
             leftVelocity -= speed;
             facingRight = false;
@@ -76,8 +76,10 @@ void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
     PHYSFS_readBytes(handle, data, length);
 }
 
-int SCREEN_WIDTH = 1400;
-int SCREEN_HEIGHT = 900;
+int SCREEN_WIDTH = 1280;
+int SCREEN_HEIGHT = 720;
+
+bool fullscreen = false;
 
 int main(int argc, char** argv)
 {
@@ -94,15 +96,22 @@ int main(int argc, char** argv)
     kp::file::init(argv[0]);
 
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 32);
     
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", NULL, NULL);
-    if (!window) {
-        kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+    
+    GLFWmonitor * monitorToFullscreenTo = NULL;
+    if(fullscreen) {
+        monitorToFullscreenTo = glfwGetPrimaryMonitor();
     }
+    
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cat", monitorToFullscreenTo, NULL);
+    if (!window)
+        kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
 
     // Create an OpenGL context on the window we've just created
     glfwMakeContextCurrent(window);
@@ -114,34 +123,155 @@ int main(int argc, char** argv)
     
 
     glEnable(GL_BLEND);
+    kp::gl::error("glEnable", glGetError());
+    
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    kp::gl::error("glBlendFunc", glGetError());
 
 
     // Initialise GLEW
-    // The glewExperimental line is necessary to force GLEW to use a modern OpenGL method for checking if a function is available.
+    // The glewExperimental line is necessary to force GLEW to use a modern
+    // OpenGL method for checking if a function is available.
     // See: http://open.gl/context
+    
+    // GLEW has a problem with core contexts. It calls glGetString(GL_EXTENSIONS)​, which causes GL_INVALID_ENUM​ on GL 3.2+ core
+    // context as soon as glewInit()​ is called. It also doesn't fetch the function pointers. The solution is for GLEW to use
+    // glGetStringi​ instead. The current version of GLEW is 1.10.0 but they still haven't corrected it.
+    // The only fix is to use glewExperimental​ for now:
+
     glewExperimental = GL_TRUE;
+    kp::gl::error("glewExperimental", glGetError());
+    
     GLenum err = glewInit();
-    if(err != GLEW_OK) {
+    kp::gl::error("glewInit", glGetError());
+    if(err != GLEW_OK)
         kp::debug::fatal("glewInit failed: %s\n", glewGetErrorString(err));
-    }
-
+    
     // print out some info about the graphics drivers
-    kp::debug::info("OpenGL version: %s", glGetString(GL_VERSION));
-    kp::debug::info("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    kp::debug::info("Vendor: %s", glGetString(GL_VENDOR));
-    kp::debug::info("Renderer: %s", glGetString(GL_RENDERER));
+    
+    kp::debug::info("Glew version: %s", glewGetString(GLEW_VERSION));
 
+    kp::debug::info("OpenGL version: %s", glGetString(GL_VERSION));
+    kp::gl::error("glGetString", glGetError());
+    
+    kp::debug::info("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    kp::gl::error("glGetString", glGetError());
+    
+    kp::debug::info("Vendor: %s", glGetString(GL_VENDOR));
+    kp::gl::error("glGetString", glGetError());
+    
+    kp::debug::info("Renderer: %s", glGetString(GL_RENDERER));
+    kp::gl::error("glGetString", glGetError());
+    
+
+    
+    
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    
+    
+    
+    
+    
+    // Create Vertex Array Object
+	GLuint vao;
+	glGenVertexArrays( 1, &vao ); kp::gl::error("glGenVertexArrays", glGetError());
+	glBindVertexArray( vao ); kp::gl::error("glBindVertexArray", glGetError());
+    
+    
+    
+	// Create a Vertex Buffer Object and copy the vertex data to it
+	GLuint vbo;
+	glGenBuffers( 1, &vbo ); kp::gl::error("glGenBuffers", glGetError());
+    
+    
+    // Define the vertices for our triangle
+    float vertices[] = {
+        // x      y     color             texcords
+        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Top-left
+        0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // Top-right
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Bottom-right
+        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // Bottom-left
+    };
+    
+    
+    
+    glBindBuffer( GL_ARRAY_BUFFER, vbo );
+    kp::gl::error("glBindBuffer", glGetError());
+    
+	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+    kp::gl::error("glBufferData", glGetError());
+    
+
+    
+    
+    // Create an element array
+	GLuint ebo;
+	glGenBuffers( 1, &ebo );
+    
+	GLuint elements[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+    
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo );
+    kp::gl::error("glBindBuffer", glGetError());
+    
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( elements ), elements, GL_STATIC_DRAW );
+    kp::gl::error("glBufferData", glGetError());
+    
+
+    
+    
+    
+    
+    
+    // Define and compile the shaders
+    kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.vsh", kp::file::read("shaders/vertex_shader.vsh"), GL_VERTEX_SHADER);
+    kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.fsh", kp::file::read("shaders/fragment_shader.fsh"), GL_FRAGMENT_SHADER);
+    
+    // Create the shader program
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertextShader->shader);
+    glAttachShader(shaderProgram, fragmentShader->shader);
+    glBindFragDataLocation( shaderProgram, 0, "outColor" );
+    glLinkProgram(shaderProgram);
+    glUseProgram(shaderProgram);
+    
+
+    
+    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
+    glEnableVertexAttribArray(posAttrib);
+    
+    GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
+    glEnableVertexAttribArray(colorAttribute);
+    glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(2*sizeof(float)));
+    
+    GLint texCordAttribute = glGetAttribLocation(shaderProgram, "texcord");
+    glEnableVertexAttribArray(texCordAttribute);
+    glVertexAttribPointer(texCordAttribute, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // Texture time!
     GLuint texture;
     glGenTextures(1, &texture);
     kp::gl::error("glGenTextures", glGetError());
-
+    
     glBindTexture(GL_TEXTURE_2D, texture);
     kp::gl::error("glBindTexture", glGetError());
+    
+    glActiveTexture( GL_TEXTURE0 );
     
     // When the texture gets bigger/smaller, how to do the actual resizing?
     // Nearest neighbour interpolation is more suited in games that want to mimic 8 bit graphics, because of the pixelated look.
@@ -156,8 +286,7 @@ int main(int argc, char** argv)
     
     
     
-    
-    
+
     
     
     
@@ -216,7 +345,7 @@ int main(int argc, char** argv)
     png_infop pngInfoStruct = png_create_info_struct(pngReadStruct);
     if(!pngInfoStruct) kp::debug::error("Failed png_create_info_struct");
     
-
+    
     png_set_read_fn(pngReadStruct, (png_voidp)handle, user_read_data);
     
     png_set_sig_bytes(pngReadStruct, pngSigSize);
@@ -227,7 +356,7 @@ int main(int argc, char** argv)
     png_uint_32 imgWidth =  png_get_image_width(pngReadStruct, pngInfoStruct);
     png_uint_32 imgHeight = png_get_image_height(pngReadStruct, pngInfoStruct);
     
-
+    
     // Update the png info struct.
     png_read_update_info(pngReadStruct, pngInfoStruct);
     
@@ -259,7 +388,7 @@ int main(int argc, char** argv)
     
     kp::debug::info("Successfully loaded %s [%ix%i]", filename, imgWidth, imgHeight);
     
-
+    
     
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)image_data);
     
@@ -267,119 +396,68 @@ int main(int argc, char** argv)
     png_destroy_read_struct(&pngReadStruct, &pngInfoStruct, NULL);
     delete[] image_data;
     delete[] row_pointers;
-
+    
     
     // Close the file handle
     PHYSFS_close(handle);
     
     
-    
-    
-    
-    
-    
-    
     // Black/white checkerboard
-    /*
-    float pixels[] = {
-        0.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
-    };
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels );
-     */
+    //float pixels[] = {
+    //    0.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
+    //    1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
+    //};
+    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, pixels );
     
     // Pre-generate the mip maps for performance
     glGenerateMipmap(GL_TEXTURE_2D);
     
-    // Vertixes time!
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    kp::gl::error("glGenVertexArrays", glGetError());
-
-    glBindVertexArray(vao);
-    kp::gl::error("glBindVertexArray", glGetError());
-
-    // Define the vertices for our triangle    
-    float vertices[] = {
-      // x      y     color             texcords
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Top-left
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // Top-right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Bottom-right
-        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // Bottom-left
-    };
-
-    // Create a vertex buffer
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-
-    // Make the vbo the current vertext buffer object. We also tell
-    // OpenGL that the VBO contains an array!
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    // Load the vertices array into the current vertext buffer object.
-    // Note: GL_STATIC_DRAW: The vertex data will be uploaded once and drawn many times (e.g. the world)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Create an element buffer
-    GLuint elements[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    GLuint elementBuffer;
-    glGenBuffers(1, &elementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
-    // Define and compile the shaders
-    kp::gl::Shader* vertextShader = new kp::gl::Shader("vertex_shader.vsh", kp::file::read("shaders/vertex_shader.vsh"), GL_VERTEX_SHADER);
-    kp::gl::Shader* fragmentShader = new kp::gl::Shader("fragment_shader.fsh", kp::file::read("shaders/fragment_shader.fsh"), GL_FRAGMENT_SHADER);
-
-    // Create the shader program
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertextShader->shader);
-    glAttachShader(shaderProgram, fragmentShader->shader);
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-
-    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), 0);
-    glEnableVertexAttribArray(posAttrib);
-
-    GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
-    glEnableVertexAttribArray(colorAttribute);
-    glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(2*sizeof(float)));
     
-    GLint texCordAttribute = glGetAttribLocation(shaderProgram, "texcord");
-    glEnableVertexAttribArray(texCordAttribute);
-    glVertexAttribPointer(texCordAttribute, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     GLint cameraAttribute = glGetUniformLocation(shaderProgram, "camera");
-    glEnableVertexAttribArray(cameraAttribute);
     
     GLint modelAttribute = glGetUniformLocation(shaderProgram, "model");
-    glEnableVertexAttribArray(modelAttribute);
     
     GLint projectionAttribute = glGetUniformLocation(shaderProgram, "projection");
-    glEnableVertexAttribArray(projectionAttribute);
     
     glm::mat4 cameraMatrix = glm::mat4();
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
-    
+
     glm::vec3 position = glm::vec3(0, 2, 0);
-    
     glm::vec3 cameraPosition = glm::vec3(3, 3, 3);
+    
+    
+    
+    
+    
     
     jumping = true;
     
-    float counter = 0.0;
-    
+
     float gravity = -0.05f;
     
-    while(1)
-    {
-        
+
+    
+	while ( !glfwWindowShouldClose(window) )
+	{
         if(jumping) {
             yVelocity += gravity;
         }
@@ -452,31 +530,37 @@ int main(int argc, char** argv)
         glClearColor(253.0 / 255.0f, 238.0 / 255.0f, 230.0 / 255.0f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw the triangle
-        //glDrawArrays( GL_TRIANGLES, 0, 3 );
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+		
+		// Draw a rectangle from the 2 triangles using 6 indices
+		glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+        
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
-
+        
         // Check if the ESC key was pressed or the window should be closed
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwGetKey(window, GLFW_KEY_ENTER))
             break;
-        if (glfwWindowShouldClose(window))
-            break;
-        
-        counter+= 0.14;
-    }
-
-    // Close OpenGL window and terminate GLFW
-    glfwTerminate();
-
-    // Cleanup our file handlers
-    kp::file::cleanup();
-
+	}
+    
+	glDeleteProgram( shaderProgram );
     delete vertextShader;
     delete fragmentShader;
+    
+	glDeleteBuffers( 1, &ebo );
+	glDeleteBuffers( 1, &vbo );
+    
+	glDeleteVertexArrays( 1, &vao );
+
+    
+    
+    // Close OpenGL window and terminate GLFW
+    glfwTerminate();
+    
+    // Cleanup our file handlers
+    kp::file::cleanup();
+    
+    
 
     exit(EXIT_SUCCESS);
 }

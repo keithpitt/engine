@@ -33,3 +33,14 @@ make ARCH="-arch i386 -arch x86_64" # it includes ppc for some silly reason
 sudo make install
 make clean
 ```
+
+### Using Boost
+
+Yeah, I use boost. Come at me bro.
+
+```
+brew install boost boost-bcp # bcp allows us to extract only small parts of the boost framework
+cd engine/extlibs/headers
+rm -rf boost
+bcp --boost=/usr/local/include format.hpp . # only include the format api
+```

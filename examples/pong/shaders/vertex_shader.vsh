@@ -1,15 +1,15 @@
-#version 120
+#version 150
 
-attribute vec2 position;
-attribute vec3 color;
-attribute vec2 texcord;
+in vec2 position;
+in vec3 color;
+in vec2 texcord;
+
+out vec3 Color;
+out vec2 Texcord;
 
 uniform mat4 camera;
 uniform mat4 model;
 uniform mat4 projection;
-
-varying vec3 Color;
-varying vec2 Texcord;
 
 void main() {
   Color = color;
