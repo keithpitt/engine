@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <stdexcept>
 
-#include "engine.h"
+#include "engine/engine.hpp"
+#include "engine/logger.hpp"
 
-#include "file.hpp"
+#include "engine/file.hpp"
+#include "engine/gl/shader.hpp"
 
 
 #include <glew/glew.h>
@@ -19,13 +21,11 @@
 
 #include <libpng/png.h>
 
-#include "gl.hpp"
-#include "shader.hpp"
+#include <engine/gl/error.hpp>
+#include <engine/gl/shader.hpp>
 
 #include <physfs/physfs.h>
 
-
-#include <boost/format.hpp>
 
 bool jumping = false;
 bool facingRight = true;
@@ -128,10 +128,10 @@ int main(int argc, char** argv)
     
 
     glEnable(GL_BLEND);
-    kp::gl::error("glEnable", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    kp::gl::error("glBlendFunc", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
 
 
     // Initialise GLEW
@@ -145,10 +145,10 @@ int main(int argc, char** argv)
     // The only fix is to use glewExperimental​ for now:
 
     glewExperimental = GL_TRUE;
-    kp::gl::error("glewExperimental", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     GLenum err = glewInit();
-    kp::gl::error("glewInit", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     if(err == GLEW_OK) {
         LOG_INFO(GLEW, boost::format("glewInit loaded version: %s") % glewGetString(GLEW_VERSION));
@@ -160,16 +160,16 @@ int main(int argc, char** argv)
     // print out some info about the graphics drivers
     
     LOG_INFO(OPENGL, boost::format("OpenGL version: %s") % glGetString(GL_VERSION));
-    kp::gl::error("glGetString", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     LOG_INFO(OPENGL, boost::format("GLSL version: %s") % glGetString(GL_SHADING_LANGUAGE_VERSION));
-    kp::gl::error("glGetString", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     LOG_INFO(OPENGL, boost::format("Vendor: %s") % glGetString(GL_VENDOR));
-    kp::gl::error("glGetString", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     LOG_INFO(OPENGL, boost::format("Renderer: %s") % glGetString(GL_RENDERER));
-    kp::gl::error("glGetString", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     
     // Ensure we can capture the escape key being pressed below
@@ -181,14 +181,14 @@ int main(int argc, char** argv)
     
     // Create Vertex Array Object
 	GLuint vao;
-	glGenVertexArrays( 1, &vao ); kp::gl::error("glGenVertexArrays", glGetError());
-	glBindVertexArray( vao ); kp::gl::error("glBindVertexArray", glGetError());
+	glGenVertexArrays( 1, &vao ); ASSERT_OPENGL_ERROR(MAIN);
+	glBindVertexArray( vao ); ASSERT_OPENGL_ERROR(MAIN);
     
     
     
 	// Create a Vertex Buffer Object and copy the vertex data to it
 	GLuint vbo;
-	glGenBuffers( 1, &vbo ); kp::gl::error("glGenBuffers", glGetError());
+	glGenBuffers( 1, &vbo ); ASSERT_OPENGL_ERROR(MAIN);
     
     
     // Define the vertices for our triangle
@@ -203,10 +203,10 @@ int main(int argc, char** argv)
     
     
     glBindBuffer( GL_ARRAY_BUFFER, vbo );
-    kp::gl::error("glBindBuffer", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
 	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
-    kp::gl::error("glBufferData", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
 
     
@@ -221,10 +221,10 @@ int main(int argc, char** argv)
 	};
     
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo );
-    kp::gl::error("glBindBuffer", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( elements ), elements, GL_STATIC_DRAW );
-    kp::gl::error("glBufferData", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
 
     
@@ -272,10 +272,10 @@ int main(int argc, char** argv)
     // Texture time!
     GLuint texture;
     glGenTextures(1, &texture);
-    kp::gl::error("glGenTextures", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     glBindTexture(GL_TEXTURE_2D, texture);
-    kp::gl::error("glBindTexture", glGetError());
+    ASSERT_OPENGL_ERROR(MAIN);
     
     glActiveTexture( GL_TEXTURE0 );
     

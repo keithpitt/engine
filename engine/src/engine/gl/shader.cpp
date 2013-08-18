@@ -1,5 +1,6 @@
 #include "shader.hpp"
-#include "gl.hpp"
+#include "logger.hpp"
+#include "engine/gl/error.hpp"
 
 kp::gl::Shader::Shader(const char* name, const char* source, GLenum shaderType)
 {
@@ -12,7 +13,7 @@ kp::gl::Shader::Shader(const char* name, const char* source, GLenum shaderType)
 
 kp::gl::Shader::~Shader()
 {
-    //LOG_FATAL(ENGINE, boost::format("Freeing shader #%i") % shader);
+    LOG_INFO(OPENGL_SHADER, boost::format("Freeing shader #%i") % shader);
     
     // Free the shader
     glDeleteShader(shader);
@@ -23,7 +24,7 @@ void kp::gl::Shader::compile()
     // Create a shader of the type specified
     shader = glCreateShader(type);
     
-    //kp::debug::info("Creating shader #%i",shader);
+    LOG_INFO(OPENGL_SHADER, boost::format("Creating shader #%i") % shader);
     
     if(shader == 0)
     {
@@ -33,11 +34,11 @@ void kp::gl::Shader::compile()
     
     // Send our shader source into the shader.
     glShaderSource(shader, 1, (const GLchar**)&source, NULL);
-    kp::gl::error("glShaderSource", glGetError());
+    ASSERT_OPENGL_ERROR(OPENGL_SHADER);
     
     // Actaully compile the shader now.
     glCompileShader(shader);
-    kp::gl::error("glCompileShader", glGetError());
+    ASSERT_OPENGL_ERROR(OPENGL_SHADER);
     
     // Find the status of the compilation
     GLint status;
@@ -49,6 +50,6 @@ void kp::gl::Shader::compile()
         char buffer[1024];
         glGetShaderInfoLog(shader, sizeof(buffer), NULL, buffer);
         
-        //kp::debug::error("Failed to compile shader `%s`:\n%s", name, buffer);
+        LOG_ERROR(OPENGL_SHADER, boost::format("Failed to compile shader `%s`:\n%s") % name % buffer);
     }
 }
