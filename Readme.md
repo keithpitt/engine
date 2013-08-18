@@ -36,11 +36,15 @@ make clean
 
 ### Using Boost
 
-Yeah, I use boost. Come at me bro.
+Yeah, I use boost. Come at me bro. We use `boost::format` because its easy and fast.
 
-```
+```bash
 brew install boost boost-bcp # bcp allows us to extract only small parts of the boost framework
 cd engine/extlibs/headers
 rm -rf boost
-bcp --boost=/usr/local/include format.hpp . # only include the format api
+bcp --boost=/usr/local/include format.hpp .
 ```
+
+### Logging
+
+See: https://github.com/elanthis/easylogger

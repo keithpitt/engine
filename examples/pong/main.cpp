@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <stdexcept>
 
-#include "string.hpp"
+#include "engine.h"
+
 #include "file.hpp"
-#include "debug.hpp"
+
 
 #include <glew/glew.h>
 
@@ -23,6 +24,9 @@
 
 #include <physfs/physfs.h>
 
+
+#include <boost/format.hpp>
+
 bool jumping = false;
 bool facingRight = true;
 
@@ -35,7 +39,7 @@ bool qToggle = false;
 
 static void error_callback(int error, const char* description)
 {
-    kp::debug::fatal(description);
+    //kp::debug::fatal(description);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -89,9 +93,10 @@ int main(int argc, char** argv)
 
     // Initialise GLFW
     if (!glfwInit()) {
-        kp::debug::fatal("glfwInit failed");
+        LOG_FATAL(GLFW, "glfwInit failed");
     }
 
+    
     // Initialize the file system reader
     kp::file::init(argv[0]);
 
@@ -111,7 +116,7 @@ int main(int argc, char** argv)
     
     window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cat", monitorToFullscreenTo, NULL);
     if (!window)
-        kp::debug::fatal("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+        LOG_FATAL(GLFW, "glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
 
     // Create an OpenGL context on the window we've just created
     glfwMakeContextCurrent(window);
@@ -144,26 +149,27 @@ int main(int argc, char** argv)
     
     GLenum err = glewInit();
     kp::gl::error("glewInit", glGetError());
-    if(err != GLEW_OK)
-        kp::debug::fatal("glewInit failed: %s\n", glewGetErrorString(err));
     
+    if(err == GLEW_OK) {
+        LOG_INFO(GLEW, boost::format("glewInit loaded version: %s") % glewGetString(GLEW_VERSION));
+    } else {
+        LOG_FATAL(GLEW, boost::format("glewInit failed: %s\n") % glewGetErrorString(err));
+    }
+    
+
     // print out some info about the graphics drivers
     
-    kp::debug::info("Glew version: %s", glewGetString(GLEW_VERSION));
-
-    kp::debug::info("OpenGL version: %s", glGetString(GL_VERSION));
+    LOG_INFO(OPENGL, boost::format("OpenGL version: %s") % glGetString(GL_VERSION));
     kp::gl::error("glGetString", glGetError());
     
-    kp::debug::info("GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    LOG_INFO(OPENGL, boost::format("GLSL version: %s") % glGetString(GL_SHADING_LANGUAGE_VERSION));
     kp::gl::error("glGetString", glGetError());
     
-    kp::debug::info("Vendor: %s", glGetString(GL_VENDOR));
+    LOG_INFO(OPENGL, boost::format("Vendor: %s") % glGetString(GL_VENDOR));
     kp::gl::error("glGetString", glGetError());
     
-    kp::debug::info("Renderer: %s", glGetString(GL_RENDERER));
+    LOG_INFO(OPENGL, boost::format("Renderer: %s") % glGetString(GL_RENDERER));
     kp::gl::error("glGetString", glGetError());
-    
-
     
     
     // Ensure we can capture the escape key being pressed below
@@ -320,7 +326,7 @@ int main(int argc, char** argv)
     
     if(handle == NULL)
     {
-        kp::debug::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
+        //kp::debug::error("PHYSFS_openRead(%s): %s", filename, PHYSFS_getLastError());
         
         return NULL;
     }
@@ -331,19 +337,19 @@ int main(int argc, char** argv)
     // Read the bytes
     if(PHYSFS_readBytes(handle, pngsig, pngSigSize) != pngSigSize)
     {
-        kp::debug::error("PHYSFS_read: %s", PHYSFS_getLastError());
+        //kp::debug::error("PHYSFS_read: %s", PHYSFS_getLastError());
         
         return NULL;
     }
     
     int is_png = png_sig_cmp(pngsig, 0, pngSigSize);
-    if (is_png != 0) kp::debug::error("libpng failed to validate %s with error code %i", filename, is_png);
+    //if (is_png != 0) kp::debug::error("libpng failed to validate %s with error code %i", filename, is_png);
     
     png_structp pngReadStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if(!pngReadStruct) kp::debug::error("Failed png_create_read_struct");
+    //if(!pngReadStruct) kp::debug::error("Failed png_create_read_struct");
     
     png_infop pngInfoStruct = png_create_info_struct(pngReadStruct);
-    if(!pngInfoStruct) kp::debug::error("Failed png_create_info_struct");
+    //if(!pngInfoStruct) kp::debug::error("Failed png_create_info_struct");
     
     
     png_set_read_fn(pngReadStruct, (png_voidp)handle, user_read_data);
@@ -386,7 +392,7 @@ int main(int argc, char** argv)
     //read the png into image_data through row_pointers
     png_read_image(pngReadStruct, row_pointers);
     
-    kp::debug::info("Successfully loaded %s [%ix%i]", filename, imgWidth, imgHeight);
+    //kp::debug::info("Successfully loaded %s [%ix%i]", filename, imgWidth, imgHeight);
     
     
     
