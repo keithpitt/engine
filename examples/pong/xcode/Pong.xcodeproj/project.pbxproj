@@ -22,7 +22,7 @@
 		C4A1710817BFA2E100D7CB9E /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */; };
 		C4A1710917BFA2F300D7CB9E /* libpng16.16.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C4A1710717BFA2E100D7CB9E /* libpng16.16.dylib */; };
 		C4A7BA8E17C17A2500E2B51A /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A7BA8717C17A2500E2B51A /* file.cpp */; };
-		C4A7BA8F17C17A2500E2B51A /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A7BA8B17C17A2500E2B51A /* shader.cpp */; };
+		C4A7BA9417C17A9C00E2B51A /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A7BA9217C17A9C00E2B51A /* shader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,10 +71,10 @@
 		C4A7BA8617C17A2500E2B51A /* engine.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = engine.hpp; path = ../../../engine/src/engine/engine.hpp; sourceTree = "<group>"; };
 		C4A7BA8717C17A2500E2B51A /* file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = file.cpp; path = ../../../engine/src/engine/file.cpp; sourceTree = "<group>"; };
 		C4A7BA8817C17A2500E2B51A /* file.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = file.hpp; path = ../../../engine/src/engine/file.hpp; sourceTree = "<group>"; };
-		C4A7BA8A17C17A2500E2B51A /* error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = error.hpp; sourceTree = "<group>"; };
-		C4A7BA8B17C17A2500E2B51A /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
-		C4A7BA8C17C17A2500E2B51A /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
 		C4A7BA8D17C17A2500E2B51A /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = logger.hpp; path = ../../../engine/src/engine/logger.hpp; sourceTree = "<group>"; };
+		C4A7BA9117C17A9C00E2B51A /* error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = error.hpp; sourceTree = "<group>"; };
+		C4A7BA9217C17A9C00E2B51A /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
+		C4A7BA9317C17A9C00E2B51A /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,24 +157,24 @@
 			path = ../shaders;
 			sourceTree = "<group>";
 		};
-		C4A7BA8917C17A2500E2B51A /* gl */ = {
+		C4A7BA9017C17A9C00E2B51A /* open_gl */ = {
 			isa = PBXGroup;
 			children = (
-				C4A7BA8A17C17A2500E2B51A /* error.hpp */,
-				C4A7BA8B17C17A2500E2B51A /* shader.cpp */,
-				C4A7BA8C17C17A2500E2B51A /* shader.hpp */,
+				C4A7BA9117C17A9C00E2B51A /* error.hpp */,
+				C4A7BA9217C17A9C00E2B51A /* shader.cpp */,
+				C4A7BA9317C17A9C00E2B51A /* shader.hpp */,
 			);
-			name = gl;
-			path = ../../../engine/src/engine/gl;
+			name = open_gl;
+			path = ../../../engine/src/engine/open_gl;
 			sourceTree = "<group>";
 		};
 		C4AB9A9417C0E63600372D5C /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				C4A7BA9017C17A9C00E2B51A /* open_gl */,
 				C4A7BA8617C17A2500E2B51A /* engine.hpp */,
 				C4A7BA8717C17A2500E2B51A /* file.cpp */,
 				C4A7BA8817C17A2500E2B51A /* file.hpp */,
-				C4A7BA8917C17A2500E2B51A /* gl */,
 				C4A7BA8D17C17A2500E2B51A /* logger.hpp */,
 			);
 			name = Engine;
@@ -244,7 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4A7BA8F17C17A2500E2B51A /* shader.cpp in Sources */,
+				C4A7BA9417C17A9C00E2B51A /* shader.cpp in Sources */,
 				C424882C17AE49A600D84E03 /* main.cpp in Sources */,
 				C4A7BA8E17C17A2500E2B51A /* file.cpp in Sources */,
 			);
@@ -325,6 +325,7 @@
 					"\"$(SRCROOT)/../engine/extlibs/libs-osx\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -346,6 +347,7 @@
 					"\"$(SRCROOT)/../engine/extlibs/libs-osx\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USE_HEADERMAP = NO;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -6,7 +6,7 @@
 #include "engine/logger.hpp"
 
 #include "engine/file.hpp"
-#include "engine/gl/shader.hpp"
+#include "engine/open_gl/shader.hpp"
 
 
 #include <glew/glew.h>
@@ -21,8 +21,8 @@
 
 #include <libpng/png.h>
 
-#include <engine/gl/error.hpp>
-#include <engine/gl/shader.hpp>
+#include <engine/open_gl/error.hpp>
+#include <engine/open_gl/shader.hpp>
 
 #include <physfs/physfs.h>
 

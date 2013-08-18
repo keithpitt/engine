@@ -1,6 +1,6 @@
 #include "shader.hpp"
-#include "logger.hpp"
-#include "engine/gl/error.hpp"
+#include "engine/logger.hpp"
+#include "engine/open_gl/error.hpp"
 
 kp::gl::Shader::Shader(const char* name, const char* source, GLenum shaderType)
 {
