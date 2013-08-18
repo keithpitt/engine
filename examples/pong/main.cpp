@@ -343,7 +343,7 @@ int main(int argc, char** argv)
     }
     
     int is_png = png_sig_cmp(pngsig, 0, pngSigSize);
-    //if (is_png != 0) kp::debug::error("libpng failed to validate %s with error code %i", filename, is_png);
+    if (is_png != 0) LOG_ERROR(LIBPNG, boost::format("libpng failed to validate %s with error code %i") % filename % is_png);
     
     png_structp pngReadStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     //if(!pngReadStruct) kp::debug::error("Failed png_create_read_struct");
